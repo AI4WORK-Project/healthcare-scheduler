@@ -1,0 +1,229 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "horizon": {
+            "description": "horizon length in days",
+            "type": "integer"
+        },
+        "shifts": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "shift_id": {
+                        "type": "string"
+                    },
+                    "length": {
+                        "description": "shift length in mins",
+                        "type": "integer"
+                    },
+                    "cannot_follow": {
+                        "description": "shifts which cannot follow this shift",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "shift_id",
+                    "length",
+                    "cannot_follow"
+                ]
+            }
+        },
+        "staff": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "employee_id": {
+                        "type": "string"
+                    },
+                    "max_shifts": {
+                        "description": "maximum number of shifts that can be assigned to the employee",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "shift_id": {
+                                    "type": "string"
+                                },
+                                "max_shifts": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "shift_id",
+                                "max_shifts"
+                            ]
+                        }
+                    },
+                    "max_total_minutes": {
+                        "description": "maximum amount of total time in minutes that can be assigned to the employee",
+                        "type": "integer"
+                    },
+                    "min_total_minutes": {
+                        "description": "minimum amount of total time in minutes that can be assigned to the employee",
+                        "type": "integer"
+                    },
+                    "max_weekly_minutes": {
+                        "description": "maximum amount of weekly time in minutes that can be assigned to the employee",
+                        "type": "integer"
+                    },
+                    "min_weekly_minutes": {
+                        "description": "minimum amount of weekly time in minutes that can be assigned to the employee",
+                        "type": "integer"
+                    },
+                    "max_consecutive_shifts": {
+                        "description": "maximum number of consecutive shifts that can be worked before having a day oﬀ",
+                        "type": "integer"
+                    },
+                    "min_consecutive_shifts": {
+                        "description": "minimum number of consecutive shifts that can be worked before having a day oﬀ",
+                        "type": "integer"
+                    },
+                    "min_consecutive_days_off": {
+                        "description": "minimum number of consecutive days oﬀ that must be assigned before assigning a shift",
+                        "type": "integer"
+                    },
+                    "max_weekends": {
+                        "description": "maximum number of weekends (a weekend is defined as being worked if there is a shift on the Sunday)",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "employee_id",
+                    "max_shifts",
+                    "max_total_minutes",
+                    "min_total_minutes",
+                    "max_weekly_minutes",
+                    "min_weekly_minutes",
+                    "max_consecutive_shifts",
+                    "min_consecutive_shifts",
+                    "min_consecutive_days_off",
+                    "max_weekends"
+                ]
+            }
+        },
+        "days_off": {
+            "description": "shifts must not be assigned to the specified employee on the specified days",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "employee_id": {
+                        "type": "string"
+                    },
+                    "day_indexes": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "integer"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "employee_id",
+                    "day_indexes"
+                ]
+            }
+        },
+        "shift_on_requests": {
+            "description": "if the specified shift is not assigned to the specified employee on the specified day then the solution's penalty is the specified weight value",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "employee_id": {
+                        "type": "string"
+                    },
+                    "day": {
+                        "type": "integer"
+                    },
+                    "shift_id": {
+                        "type": "string"
+                    },
+                    "weight": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "employee_id",
+                    "day",
+                    "shift_id",
+                    "weight"
+                ]
+            }
+        },
+        "shift_off_requests": {
+            "description": "if the specified shift is assigned to the specified employee on the specified day then the solution's penalty is the weight value",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "employee_id": {
+                        "type": "string"
+                    },
+                    "day": {
+                        "type": "integer"
+                    },
+                    "shift_id": {
+                        "type": "string"
+                    },
+                    "weight": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "employee_id",
+                    "day",
+                    "shift_id",
+                    "weight"
+                ]
+            }
+        },
+        "cover": {
+            "description": "if the required number of staﬀ on the specified day for the specified shift is not assigned, the penalty is (requirement - x) * weight_for_under or (x - requirement) * weight_for_over, where x is the number of staff assigned",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "day": {
+                        "type": "integer"
+                    },
+                    "shift_id": {
+                        "type": "string"
+                    },
+                    "requirement": {
+                        "type": "integer"
+                    },
+                    "weight_for_under": {
+                        "type": "integer"
+                    },
+                    "weight_for_over": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "day",
+                    "shift_id",
+                    "requirement",
+                    "weight_for_under",
+                    "weight_for_over"
+                ]
+            }
+        }
+    },
+    "required": [
+        "horizon",
+        "shifts",
+        "staff",
+        "days_off",
+        "shift_on_requests",
+        "shift_off_requests",
+        "cover"
+    ]
+}

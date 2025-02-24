@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "healthcare"
+version = "0.1.0"
+dependencies = [
+    "cpmpy",
+    "ortools",
+    "numpy",
+    "pandas==2.1.4",
+    "matplotlib",
+    "dataclasses-json",
+    "faker",
+    "flask",
+    "waitress"
+]
