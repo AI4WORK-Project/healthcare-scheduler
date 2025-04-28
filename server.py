@@ -12,7 +12,7 @@ def schedule():
     try:
         logging.info("Request received!")
 
-        instance: Instance = Instance.from_json(request.json)
+        instance: Instance = Instance.from_dict(request.json)
         problem = instance.scheduling_problem()
 
         factory = NurseSchedulingFactory(problem)

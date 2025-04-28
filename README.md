@@ -6,14 +6,14 @@ This repository contains the `healthcare` Python package and the REST API server
 To build the Docker image, run:
 
 ```sh
-docker build -t healthcare-app .
+docker build -t healthcare-scheduler .
 ```
 
 ## Running the Container
 To run the container and expose the application on port 5000, execute:
 
 ```sh
-docker run -p 5000:5000 healthcare-app
+docker run -p 5000:5000 healthcare-scheduler
 ```
 
 ## Accessing the Application
@@ -48,3 +48,8 @@ python client_example.py
 ```
 
 This script sends a request to the running server and prints the response.
+
+Alternatively, you can use `curl`:
+```sh
+curl -X POST --json @examples/instances/instance1.json "http://0.0.0.0:5000/schedule?time_limit=60"
+```
