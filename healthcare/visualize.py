@@ -1,34 +1,46 @@
 import pandas as pd
 import numpy as np
+from healthcare import SchedulingProblem, Solution
 
 import matplotlib.pyplot as plt
 
 
-def visualize(sol, factory, highlight_cover=False):
-    weeks = [f"Week {i + 1}" for i in range(factory.data.horizon // 7)]
+def visualize(problem: SchedulingProblem, solution: Solution):
+    weeks = [f"Week {i + 1}" for i in range(problem.horizon // 7)]
     weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    nurses = factory.data.staff["name"].tolist()
+
+    shift_name_to_idx = {
+        name: idx + 1 for idx, (name, _) in enumerate(problem.shifts.iterrows())
+    }
+    idx_to_name = ["-"] + [key for key in shift_name_to_idx]
+    shift_name_to_idx.update({"-": 0})
+
+    sol = []
+    for i, employee_id in enumerate(problem.staff["name"].tolist()):
+        assert solution.shift_schedule[i].employee_id == employee_id
+        sol.append(
+            list(map(lambda s: shift_name_to_idx[s], solution.shift_schedule[i].shifts))
+        )
 
     df = pd.DataFrame(
         sol,
         columns=pd.MultiIndex.from_product((weeks, weekdays), names=("Week", "Day")),
-        index=factory.data.staff.name,
+        index=problem.staff.name,
     )
 
     total_minutes = (
         df.map(
-            lambda i: (
-                ([0] + list(factory.data.shifts.Length))[i] if i is not None else 0
-            )
+            lambda i: (([0] + list(problem.shifts.Length))[i] if i is not None else 0)
         )
         .sum(axis=1)
         .astype(int)
     )
 
-    mapping = factory.idx_to_name
-    df = df.map(lambda v: mapping[v] if v is not None else "")  # convert to shift names
+    df = df.map(
+        lambda v: idx_to_name[v] if v is not None else ""
+    )  # convert to shift names
 
-    real_shifts = sorted(set(factory.shift_name_to_idx) - {"-"})
+    real_shifts = sorted(set(shift_name_to_idx) - {"-"})
     total_shifts = pd.DataFrame(
         columns=pd.MultiIndex.from_product([["#Shifts"], real_shifts]), index=df.index
     )
@@ -37,9 +49,7 @@ def visualize(sol, factory, highlight_cover=False):
 
     for shift_type in real_shifts:
         sums = (df == shift_type).sum()  # cover for each shift type
-        req = factory.data.cover["Requirement"][
-            factory.data.cover["ShiftID"] == shift_type
-        ]
+        req = problem.cover["Requirement"][problem.cover["ShiftID"] == shift_type]
         req.index = sums.index
         df.loc[f"Cover {shift_type}"] = sums.astype(str) + "/" + req.astype(str)
 
@@ -50,7 +60,7 @@ def visualize(sol, factory, highlight_cover=False):
     df["#Minutes"] = df["#Minutes"].astype(int)
 
     subset = (
-        df.index.tolist()[: -len(factory.data.shifts)],
+        df.index.tolist()[: -len(problem.shifts)],
         df.columns[: -(len(real_shifts) + 1)],
     )
     style = df.style.set_table_styles(
@@ -63,33 +73,22 @@ def visualize(sol, factory, highlight_cover=False):
         ]
     )
     style = style.map(lambda v: "border: 1px solid black", subset=subset)
-    style = style.map(color_shift, factory=factory, subset=subset)  # color cells
-
-    if highlight_cover is True:
-
-        def highlight(val):
-            fill, req = val.split("/")
-            if fill == req:
-                return ""
-            return "color : red"
-
-        subset = (df.index.tolist()[-len(factory.data.shifts) :], df.columns[:-2])
-        style = style.map(highlight, subset=subset)
+    style = style.map(
+        color_shift, shift_name_to_idx=shift_name_to_idx, subset=subset
+    )  # color cells
 
     return style
 
 
-def color_shift(shift, factory):
+def color_shift(shift, shift_name_to_idx):
     # cmap = ["yellow", "blue","red", "orange", "cyan"]
     cmap = plt.get_cmap(
         "Set3"
     )  # https://matplotlib.org/2.0.2/examples/color/colormaps_reference.html
     if shift is None or shift == "" or shift == "-":
         return "background-color: white"
-    # return f"background-color: {cmap(factory.shift_name_to_idx[shift])}"
-    r, g, b = (
-        round(255 * val) for val in cmap.colors[factory.shift_name_to_idx[shift]]
-    )
+    # return f"background-color: {cmap(shift_name_to_idx[shift])}"
+    r, g, b = (round(255 * val) for val in cmap.colors[shift_name_to_idx[shift]])
     return f"background-color: rgb({r},{g},{b})"
 
 

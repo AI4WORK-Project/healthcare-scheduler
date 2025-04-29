@@ -23,7 +23,7 @@ def schedule():
 
         if model.solve(solver="ortools", time_limit=time_limit):
             logging.info(f"Solution penalty: {model.objective_value()}")
-            solution = Solution(nurse_view.value(), factory)
+            solution = Solution.from_nurse_view(nurse_view.value(), factory)
         else:
             logging.info("No solution has been found for the given problem")
             return Response(

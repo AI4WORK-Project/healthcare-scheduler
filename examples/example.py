@@ -20,11 +20,11 @@ def main():
     if model.solve(solver="ortools", time_limit=20 * 60):
         print("Total penalty:", model.objective_value())
 
-        solution = Solution(nurse_view.value(), factory)
+        solution = Solution.from_nurse_view(nurse_view.value(), factory)
         with open("instances/instance1_solution.json", "w") as f:
             f.write(solution.to_json())
 
-        style = visualize(nurse_view.value(), factory)
+        style = visualize(problem, solution)
         with open(f"instances/instance1_visualize.html", "w") as f:
             f.write(style.to_html())
     else:
