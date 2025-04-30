@@ -1,5 +1,7 @@
 from healthcare import Instance, Solution, NurseSchedulingFactory, SchedulingProblem
 from healthcare.visualize import visualize
+import pathlib
+import os
 
 
 def parse_from_json_file(fname) -> SchedulingProblem:
@@ -11,8 +13,13 @@ def parse_from_json_file(fname) -> SchedulingProblem:
 
 
 def main():
-    instance = "instances/instance1.json"
-    problem = parse_from_json_file(instance)
+    examples_path = pathlib.Path(__file__).parent.resolve()
+    instance_path = os.path.join(examples_path, "instances/instance1.json")
+    solution_path = os.path.join(examples_path, "instances/instance1_solution.json")
+    visualization_path = os.path.join(
+        examples_path, "instances/instance1_visualize.html"
+    )
+    problem = parse_from_json_file(instance_path)
 
     factory = NurseSchedulingFactory(problem)
     model, nurse_view = factory.get_optimization_model()
@@ -21,11 +28,11 @@ def main():
         print("Total penalty:", model.objective_value())
 
         solution = Solution.from_nurse_view(nurse_view.value(), factory)
-        with open("instances/instance1_solution.json", "w") as f:
+        with open(solution_path, "w") as f:
             f.write(solution.to_json())
 
         style = visualize(problem, solution)
-        with open(f"instances/instance1_visualize.html", "w") as f:
+        with open(visualization_path, "w") as f:
             f.write(style.to_html())
     else:
         print("No solution.")

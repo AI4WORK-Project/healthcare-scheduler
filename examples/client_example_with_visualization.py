@@ -2,6 +2,7 @@ import os
 import json
 import requests
 import webbrowser
+import pathlib
 from healthcare import Instance, Solution, SchedulingProblem
 from healthcare.visualize import visualize
 
@@ -16,8 +17,10 @@ def parse_from_json_file(fname) -> SchedulingProblem:
 
 def main():
     url = "http://0.0.0.0:5000/schedule"
+    examples_path = pathlib.Path(__file__).parent.resolve()
+    instance_path = os.path.join(examples_path, "instances/instance1.json")
+    visualize_path = os.path.join(examples_path, "instances/instance1_visualize.html")
 
-    instance_path = "instances/instance1.json"
     with open(instance_path, "r") as f:
         instance = json.load(f)
 
@@ -30,12 +33,10 @@ def main():
         problem = parse_from_json_file(instance_path)
         solution: Solution = Solution.from_dict(response.json())
         style = visualize(problem, solution)
-        visualize_path = "instances/instance1_visualize.html"
         with open(visualize_path, "w") as f:
             f.write(style.to_html())
-            
-        abs_path = os.path.abspath(visualize_path)
-        webbrowser.open(f'file://{abs_path}')
+
+        webbrowser.open(f"file://{visualize_path}")
 
     else:
         print("No solution.")
