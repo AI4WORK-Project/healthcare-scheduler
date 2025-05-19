@@ -19,6 +19,7 @@ jobs:
       - name: Install package and dependencies 
         run: |
           python3 -m pip install .
+          python3 -m pip install requests
       - name: Install pytest
         run: |
           python3 -m pip install pytest
