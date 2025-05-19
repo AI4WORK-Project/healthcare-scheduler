@@ -25,3 +25,10 @@ jobs:
       - name: Run tests
         run: |
           python -m pytest ./tests
+      - name: Test server
+        run: |
+          python server.py &
+          SERVER_PID=$!
+          sleep 1
+          python examples/client_example.py
+          kill $SERVER_PID
