@@ -19,10 +19,17 @@ jobs:
       - name: Install package and dependencies 
         run: |
           python3 -m pip install .[test]
-      - name: Run tests
+      - name: Run solver tests
         run: |
-          python -m pytest -v ./tests
-      - name: Test server
+          python -m pytest -v ./tests/test_solver.py
+      - name: Run API tests
+        run: |
+          python server.py &
+          SERVER_PID=$!
+          sleep 1
+          python -m pytest -v ./tests/test_api.py
+          kill $SERVER_PID
+      - name: Client example test
         run: |
           python server.py &
           SERVER_PID=$!
