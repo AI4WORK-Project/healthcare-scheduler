@@ -1,0 +1,2858 @@
+{
+  "horizon": 28,
+  "shifts": [
+    {
+      "shift_id": "LM",
+      "length": 480,
+      "cannot_follow": []
+    },
+    {
+      "shift_id": "LA",
+      "length": 480,
+      "cannot_follow": [
+        "LM"
+      ]
+    },
+    {
+      "shift_id": "LN",
+      "length": 480,
+      "cannot_follow": [
+        "LM",
+        "LA"
+      ]
+    },
+    {
+      "shift_id": "RM",
+      "length": 480,
+      "cannot_follow": []
+    },
+    {
+      "shift_id": "RA",
+      "length": 480,
+      "cannot_follow": [
+        "RM"
+      ]
+    },
+    {
+      "shift_id": "RN",
+      "length": 480,
+      "cannot_follow": [
+        "RM",
+        "RA"
+      ]
+    },
+    {
+      "shift_id": "AM",
+      "length": 480,
+      "cannot_follow": []
+    },
+    {
+      "shift_id": "AA",
+      "length": 480,
+      "cannot_follow": [
+        "AM"
+      ]
+    },
+    {
+      "shift_id": "AN",
+      "length": 480,
+      "cannot_follow": [
+        "AM",
+        "AA"
+      ]
+    }
+  ],
+  "staff": [
+    {
+      "employee_id": "Bruce",
+      "max_shifts": [
+        {
+          "shift_id": "LM",
+          "max_shifts": 12
+        },
+        {
+          "shift_id": "LA",
+          "max_shifts": 12
+        },
+        {
+          "shift_id": "LN",
+          "max_shifts": 12
+        }
+      ],
+      "max_total_minutes": 5760,
+      "min_total_minutes": 5760,
+      "max_weekly_minutes": 1440,
+      "min_weekly_minutes": 1440,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Phillip",
+      "max_shifts": [
+        {
+          "shift_id": "LM",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "LA",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "LN",
+          "max_shifts": 16
+        }
+      ],
+      "max_total_minutes": 7680,
+      "min_total_minutes": 7680,
+      "max_weekly_minutes": 1920,
+      "min_weekly_minutes": 1920,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "April",
+      "max_shifts": [
+        {
+          "shift_id": "LM",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "LA",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "LN",
+          "max_shifts": 16
+        }
+      ],
+      "max_total_minutes": 7680,
+      "min_total_minutes": 7680,
+      "max_weekly_minutes": 1920,
+      "min_weekly_minutes": 1920,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Shane",
+      "max_shifts": [
+        {
+          "shift_id": "LM",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "LA",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "LN",
+          "max_shifts": 16
+        }
+      ],
+      "max_total_minutes": 7680,
+      "min_total_minutes": 7680,
+      "max_weekly_minutes": 1920,
+      "min_weekly_minutes": 1920,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Tracy",
+      "max_shifts": [
+        {
+          "shift_id": "LM",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "LA",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "LN",
+          "max_shifts": 16
+        }
+      ],
+      "max_total_minutes": 7680,
+      "min_total_minutes": 7680,
+      "max_weekly_minutes": 1920,
+      "min_weekly_minutes": 1920,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Rodney",
+      "max_shifts": [
+        {
+          "shift_id": "RM",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "RA",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "RN",
+          "max_shifts": 20
+        }
+      ],
+      "max_total_minutes": 9600,
+      "min_total_minutes": 9600,
+      "max_weekly_minutes": 2400,
+      "min_weekly_minutes": 2400,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Micheal",
+      "max_shifts": [
+        {
+          "shift_id": "RM",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "RA",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "RN",
+          "max_shifts": 16
+        }
+      ],
+      "max_total_minutes": 7680,
+      "min_total_minutes": 7680,
+      "max_weekly_minutes": 1920,
+      "min_weekly_minutes": 1920,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Jose",
+      "max_shifts": [
+        {
+          "shift_id": "RM",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "RA",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "RN",
+          "max_shifts": 20
+        }
+      ],
+      "max_total_minutes": 9600,
+      "min_total_minutes": 9600,
+      "max_weekly_minutes": 2400,
+      "min_weekly_minutes": 2400,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Kimberly",
+      "max_shifts": [
+        {
+          "shift_id": "RM",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "RA",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "RN",
+          "max_shifts": 20
+        }
+      ],
+      "max_total_minutes": 9600,
+      "min_total_minutes": 9600,
+      "max_weekly_minutes": 2400,
+      "min_weekly_minutes": 2400,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Caleb",
+      "max_shifts": [
+        {
+          "shift_id": "AM",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "AA",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "AN",
+          "max_shifts": 20
+        }
+      ],
+      "max_total_minutes": 9600,
+      "min_total_minutes": 9600,
+      "max_weekly_minutes": 2400,
+      "min_weekly_minutes": 2400,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Stacy",
+      "max_shifts": [
+        {
+          "shift_id": "AM",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "AA",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "AN",
+          "max_shifts": 16
+        }
+      ],
+      "max_total_minutes": 7680,
+      "min_total_minutes": 7680,
+      "max_weekly_minutes": 1920,
+      "min_weekly_minutes": 1920,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Eddie",
+      "max_shifts": [
+        {
+          "shift_id": "AM",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "AA",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "AN",
+          "max_shifts": 16
+        }
+      ],
+      "max_total_minutes": 7680,
+      "min_total_minutes": 7680,
+      "max_weekly_minutes": 1920,
+      "min_weekly_minutes": 1920,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Natalie",
+      "max_shifts": [
+        {
+          "shift_id": "AM",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "AA",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "AN",
+          "max_shifts": 20
+        }
+      ],
+      "max_total_minutes": 9600,
+      "min_total_minutes": 9600,
+      "max_weekly_minutes": 2400,
+      "min_weekly_minutes": 2400,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Tyler",
+      "max_shifts": [
+        {
+          "shift_id": "AM",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "AA",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "AN",
+          "max_shifts": 20
+        }
+      ],
+      "max_total_minutes": 9600,
+      "min_total_minutes": 9600,
+      "max_weekly_minutes": 2400,
+      "min_weekly_minutes": 2400,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Sally",
+      "max_shifts": [
+        {
+          "shift_id": "AM",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "AA",
+          "max_shifts": 16
+        },
+        {
+          "shift_id": "AN",
+          "max_shifts": 16
+        }
+      ],
+      "max_total_minutes": 7680,
+      "min_total_minutes": 7680,
+      "max_weekly_minutes": 1920,
+      "min_weekly_minutes": 1920,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    },
+    {
+      "employee_id": "Marcus",
+      "max_shifts": [
+        {
+          "shift_id": "AM",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "AA",
+          "max_shifts": 20
+        },
+        {
+          "shift_id": "AN",
+          "max_shifts": 20
+        }
+      ],
+      "max_total_minutes": 9600,
+      "min_total_minutes": 9600,
+      "max_weekly_minutes": 2400,
+      "min_weekly_minutes": 2400,
+      "max_consecutive_shifts": 10,
+      "min_consecutive_shifts": 1,
+      "min_consecutive_days_off": 1,
+      "max_weekends": 4
+    }
+  ],
+  "days_off": [
+    {
+      "employee_id": "Bruce",
+      "day_indexes": [
+        7,
+        0
+      ]
+    },
+    {
+      "employee_id": "Phillip",
+      "day_indexes": []
+    },
+    {
+      "employee_id": "April",
+      "day_indexes": [
+        20
+      ]
+    },
+    {
+      "employee_id": "Shane",
+      "day_indexes": [
+        6
+      ]
+    },
+    {
+      "employee_id": "Tracy",
+      "day_indexes": []
+    },
+    {
+      "employee_id": "Rodney",
+      "day_indexes": [
+        24,
+        3,
+        18
+      ]
+    },
+    {
+      "employee_id": "Micheal",
+      "day_indexes": []
+    },
+    {
+      "employee_id": "Jose",
+      "day_indexes": [
+        6,
+        20
+      ]
+    },
+    {
+      "employee_id": "Kimberly",
+      "day_indexes": [
+        6,
+        23
+      ]
+    },
+    {
+      "employee_id": "Caleb",
+      "day_indexes": [
+        1
+      ]
+    },
+    {
+      "employee_id": "Stacy",
+      "day_indexes": [
+        18,
+        6
+      ]
+    },
+    {
+      "employee_id": "Eddie",
+      "day_indexes": [
+        8,
+        4,
+        22
+      ]
+    },
+    {
+      "employee_id": "Natalie",
+      "day_indexes": [
+        10,
+        17
+      ]
+    },
+    {
+      "employee_id": "Tyler",
+      "day_indexes": [
+        24
+      ]
+    },
+    {
+      "employee_id": "Sally",
+      "day_indexes": [
+        27
+      ]
+    },
+    {
+      "employee_id": "Marcus",
+      "day_indexes": []
+    }
+  ],
+  "shift_on_requests": [
+    {
+      "employee_id": "April",
+      "day": 0,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 1,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 2,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 3,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 4,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 5,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 6,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 7,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 8,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 9,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 10,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 11,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 12,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 13,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 14,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 15,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 16,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 17,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 18,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 19,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 20,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 21,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 22,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 23,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 24,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 25,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 26,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 27,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 0,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 1,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 2,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 3,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 4,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 5,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 6,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 7,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 8,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 9,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 10,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 11,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 12,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 13,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 14,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 15,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 16,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 17,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 18,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 19,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 20,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 21,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 22,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 23,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 24,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 25,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 26,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 27,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 0,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 1,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 2,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 3,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 4,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 5,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 6,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 7,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 8,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 9,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 10,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 11,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 12,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 13,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 14,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 15,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 16,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 17,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 18,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 19,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 20,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 21,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 22,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 23,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 24,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 25,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 26,
+      "shift_id": "AN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Sally",
+      "day": 27,
+      "shift_id": "AN",
+      "weight": 1
+    }
+  ],
+  "shift_off_requests": [
+    {
+      "employee_id": "Shane",
+      "day": 11,
+      "shift_id": "LA",
+      "weight": 1
+    },
+    {
+      "employee_id": "April",
+      "day": 18,
+      "shift_id": "LN",
+      "weight": 1
+    },
+    {
+      "employee_id": "Shane",
+      "day": 20,
+      "shift_id": "LM",
+      "weight": 1
+    }
+  ],
+  "cover": [
+    {
+      "day": 0,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 0,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 0,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 0,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 0,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 0,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 0,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 0,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 0,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 1,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 1,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 1,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 1,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 1,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 1,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 1,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 1,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 1,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 2,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 2,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 2,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 2,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 2,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 2,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 2,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 2,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 2,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 3,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 3,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 3,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 3,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 3,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 3,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 3,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 3,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 3,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 4,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 4,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 4,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 4,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 4,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 4,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 4,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 4,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 4,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 5,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 5,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 5,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 5,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 5,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 5,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 5,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 5,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 5,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 6,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 6,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 6,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 6,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 6,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 6,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 6,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 6,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 6,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 7,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 7,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 7,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 7,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 7,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 7,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 7,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 7,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 7,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 8,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 8,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 8,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 8,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 8,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 8,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 8,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 8,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 8,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 9,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 9,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 9,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 9,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 9,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 9,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 9,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 9,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 9,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 10,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 10,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 10,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 10,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 10,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 10,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 10,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 10,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 10,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 11,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 11,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 11,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 11,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 11,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 11,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 11,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 11,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 11,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 12,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 12,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 12,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 12,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 12,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 12,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 12,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 12,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 12,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 13,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 13,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 13,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 13,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 13,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 13,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 13,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 13,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 13,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 14,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 14,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 14,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 14,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 14,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 14,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 14,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 14,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 14,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 15,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 15,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 15,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 15,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 15,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 15,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 15,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 15,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 15,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 16,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 16,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 16,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 16,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 16,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 16,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 16,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 16,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 16,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 17,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 17,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 17,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 17,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 17,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 17,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 17,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 17,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 17,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 18,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 18,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 18,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 18,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 18,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 18,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 18,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 18,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 18,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 19,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 19,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 19,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 19,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 19,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 19,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 19,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 19,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 19,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 20,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 20,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 20,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 20,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 20,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 20,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 20,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 20,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 20,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 21,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 21,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 21,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 21,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 21,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 21,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 21,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 21,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 21,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 22,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 22,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 22,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 22,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 22,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 22,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 22,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 22,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 22,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 23,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 23,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 23,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 23,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 23,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 23,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 23,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 23,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 23,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 24,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 24,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 24,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 24,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 24,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 24,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 24,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 24,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 24,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 25,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 25,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 25,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 25,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 25,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 25,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 25,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 25,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 25,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 26,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 26,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 26,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 26,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 26,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 26,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 26,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 26,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 26,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 27,
+      "shift_id": "LM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 27,
+      "shift_id": "LA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 27,
+      "shift_id": "LN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 27,
+      "shift_id": "RM",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 27,
+      "shift_id": "RA",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 27,
+      "shift_id": "RN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 27,
+      "shift_id": "AM",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 27,
+      "shift_id": "AA",
+      "requirement": 2,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    },
+    {
+      "day": 27,
+      "shift_id": "AN",
+      "requirement": 1,
+      "weight_for_under": 100,
+      "weight_for_over": 1
+    }
+  ]
+}
