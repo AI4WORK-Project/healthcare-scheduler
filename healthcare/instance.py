@@ -1,33 +1,40 @@
-import dataclasses
-import dataclasses_json
+from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 import pandas as pd
-from faker import Faker
 from typing import List
 
-from .read_data import SchedulingProblem
+from .scheduling_problem import SchedulingProblem
 
 
-fake = Faker()
-fake.seed_instance(0)
-
-
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+@dataclass_json
+@dataclass
 class Shift:
     shift_id: str
     length: int
     cannot_follow: List[str]
 
+    def __post_init__(self):
+        self.validate()
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+    def validate(self):
+        assert self.length > 0, "Shift length must be greater than 0"
+
+
+@dataclass_json
+@dataclass
 class MaxShifts:
     shift_id: str
     max_shifts: int
 
+    def __post_init__(self):
+        self.validate()
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+    def validate(self):
+        assert self.max_shifts >= 0, "Max shifts must be greater than or equal to 0"
+
+
+@dataclass_json
+@dataclass
 class Staff:
     employee_id: str
     max_shifts: List[MaxShifts]
@@ -40,25 +47,77 @@ class Staff:
     min_consecutive_days_off: int
     max_weekends: int
 
+    def __post_init__(self):
+        self.validate()
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+    def validate(self):
+        assert (
+            self.max_total_minutes >= 0
+        ), "Max total minutes must be greater than or equal to 0"
+        assert (
+            self.min_total_minutes >= 0
+        ), "Min total minutes must be greater than or equal to 0"
+        assert (
+            self.max_total_minutes >= self.min_total_minutes
+        ), "Max total minutes must be greater than or equal to min total minutes"
+
+        assert (
+            self.max_weekly_minutes >= 0
+        ), "Max weekly minutes must be greater than or equal to 0"
+        assert (
+            self.min_weekly_minutes >= 0
+        ), "Min weekly minutes must be greater than or equal to 0"
+        assert (
+            self.max_weekly_minutes >= self.min_weekly_minutes
+        ), "Max weekly minutes must be greater than or equal to min weekly minutes"
+
+        assert (
+            self.max_total_minutes >= self.max_weekly_minutes
+        ), "Max total minutes must be greater than or equal to max weekly minutes"
+        assert (
+            self.min_total_minutes >= self.min_weekly_minutes
+        ), "Min total minutes must be greater than or equal to min weekly minutes"
+
+        assert (
+            self.max_consecutive_shifts >= 0
+        ), "Max consecutive shifts must be greater than or equal to 0"
+        assert (
+            self.min_consecutive_shifts >= 0
+        ), "Min consecutive shifts must be greater than or equal to 0"
+        assert (
+            self.max_consecutive_shifts >= self.min_consecutive_shifts
+        ), "Max consecutive shifts must be greater than or equal to min consecutive shifts"
+
+        assert (
+            self.min_consecutive_days_off >= 0
+        ), "Min consecutive days off must be greater than or equal to 0"
+        assert self.max_weekends >= 0, "Max weekends must be greater than or equal to 0"
+
+
+@dataclass_json
+@dataclass
 class DaysOff:
     employee_id: str
     day_indexes: List[int]
 
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+@dataclass_json
+@dataclass
 class ShiftRequest:
     employee_id: str
     day: int
     shift_id: str
     weight: int
 
+    def __post_init__(self):
+        self.validate()
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+    def validate(self):
+        assert self.weight >= 0, "Weight must be greater than or equal to 0"
+
+
+@dataclass_json
+@dataclass
 class Cover:
     day: int
     shift_id: str
@@ -66,9 +125,21 @@ class Cover:
     weight_for_under: int
     weight_for_over: int
 
+    def __post_init__(self):
+        self.validate()
 
-@dataclasses_json.dataclass_json
-@dataclasses.dataclass
+    def validate(self):
+        assert self.requirement >= 0, "Requirement must be greater than or equal to 0"
+        assert (
+            self.weight_for_under >= 0
+        ), "Weight for under must be greater than or equal to 0"
+        assert (
+            self.weight_for_over >= 0
+        ), "Weight for over must be greater than or equal to 0"
+
+
+@dataclass_json
+@dataclass
 class Instance:
     horizon: int
     shifts: List[Shift]
@@ -77,6 +148,53 @@ class Instance:
     shift_on_requests: List[ShiftRequest]
     shift_off_requests: List[ShiftRequest]
     cover: List[Cover]
+
+    def __post_init__(self):
+        self.validate()
+
+    def validate(self):
+        assert self.horizon > 0, "The horizon must be greater than 0"
+
+        shifts = set(shift.shift_id for shift in self.shifts)
+        assert len(shifts) == len(self.shifts), "Shift IDs must be unique"
+        assert all(
+            set(shift.cannot_follow).issubset(shifts) for shift in self.shifts
+        ), "Cannot follow shifts must contain valid shift IDs"
+
+        nurses = set(nurse.employee_id for nurse in self.staff)
+        assert len(nurses) == len(self.staff), "Nurse IDs must be unique"
+
+        for nurse in self.staff:
+            for max_shift in nurse.max_shifts:
+                assert max_shift.shift_id in shifts, "Max shift IDs must be valid"
+
+        assert len(set(day_off.employee_id for day_off in self.days_off)) == len(
+            self.days_off
+        ), "Days off nurse IDs must be unique"
+
+        for day_off in self.days_off:
+            assert day_off.employee_id in nurses, "Days off nurse IDs must be valid"
+            for day in day_off.day_indexes:
+                assert 0 <= day < self.horizon, "Days off must be within the horizon"
+
+        for request in self.shift_on_requests + self.shift_off_requests:
+            assert (
+                request.employee_id in nurses
+            ), "Shift on requests nurse IDs must be valid"
+
+            assert (
+                0 <= request.day < self.horizon
+            ), "Shift on requests days must be within the horizon"
+
+            assert (
+                request.shift_id in shifts
+            ), "Shift on requests shift IDs must be valid"
+
+        for cover in self.cover:
+            assert (
+                0 <= cover.day < self.horizon
+            ), "Cover days must be within the horizon"
+            assert cover.shift_id in shifts, "Cover shift IDs must be valid"
 
     def scheduling_problem(self) -> SchedulingProblem:
         problem = SchedulingProblem()
@@ -106,7 +224,6 @@ class Instance:
         }
         problem.staff.rename(columns=lambda x: names_mapping[x], inplace=True)
         problem.staff["name"] = problem.staff["# ID"]
-        # problem.staff["name"] = [fake.unique.first_name() for _ in problem.staff.index]
         maxes = dict((shift_id, []) for shift_id in problem.shifts.index)
         for nurse_max_shifts in problem.staff["MaxShifts"]:
             for shift_id in problem.shifts.index:

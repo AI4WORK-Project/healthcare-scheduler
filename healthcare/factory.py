@@ -1,7 +1,7 @@
 import cpmpy as cp
 from cpmpy.transformations.normalize import toplevel_list
 
-from .read_data import SchedulingProblem
+from .scheduling_problem import SchedulingProblem
 
 FREE = 0
 
