@@ -79,10 +79,10 @@
                     "max_shifts": 20
                 }
             ],
-            "max_total_minutes": 9600,
-            "min_total_minutes": 9600,
+            "max_total_minutes": 999999999,
+            "min_total_minutes": 999999999,
             "max_weekly_minutes": 2400,
-            "min_weekly_minutes": 999999999,
+            "min_weekly_minutes": 2400,
             "max_consecutive_shifts": 10,
             "min_consecutive_shifts": 1,
             "min_consecutive_days_off": 1,
