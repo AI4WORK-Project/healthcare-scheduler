@@ -65,10 +65,11 @@ class NurseSchedulingFactory:
         cons_on, penalty_on = self.shift_on_requests(formulation="soft")
         cons_off, penalty_off = self.shift_off_requests(formulation="soft")
         cons_cover, penalty_cover = self.cover(formulation="soft")
+        cons_stress, penalty_stress = self.stress()
 
         model = self.get_hard_constraints()
-        model += [cons_on, cons_off, cons_cover]
-        obj_func = penalty_on + penalty_off + penalty_cover
+        model += [cons_on, cons_off, cons_cover, cons_stress]
+        obj_func = penalty_on + penalty_off + penalty_cover + penalty_stress
         model.minimize(obj_func)
 
         model.constraints = toplevel_list(model.constraints, merge_and=False)
@@ -566,6 +567,39 @@ class NurseSchedulingFactory:
             expr.set_description(
                 f"Shift {cover['ShiftID']} on {self.days[day]} must be covered by {requirement} nurses out of {len(self.nurse_view)}"
             )
+            constraints.append(expr)
+
+        return constraints, cp.sum(penalties)
+
+    def stress(self):
+        constraints = []
+        penalties = []
+
+        shifts_stress_weights = [0] * len(self.shift_name_to_idx)
+        for shift_id, shift in self.data.shifts.iterrows():
+            shifts_stress_weights[self.shift_name_to_idx[shift_id]] = shift[
+                "StressWeight"
+            ]
+
+        for _, nurse in self.data.staff.iterrows():
+            n = self.nurse_map.index(nurse["# ID"])
+            nurse_shifts = self.nurse_view[n]
+            num_shifts = sum(nurse_shifts != FREE)
+
+            accumulated_stress = [nurse["StressLevel"] * 10]
+            for day in range(len(nurse_shifts)):
+                for shift in self.shift_name_to_idx.values():
+                    if shifts_stress_weights[shift] == 0:
+                        continue
+                    accumulated_stress.append(
+                        (nurse_shifts[day] == shift) * shifts_stress_weights[shift]
+                    )
+                    # expr = nurse_shifts[day] == shift
+                    # penalties.append(
+                    #     nurse["StressLevel"] * shifts_stress_weights[shift] * expr
+                    # )
+
+            expr = sum(accumulated_stress) < num_shifts * self.data.stress_threshold
             constraints.append(expr)
 
         return constraints, cp.sum(penalties)

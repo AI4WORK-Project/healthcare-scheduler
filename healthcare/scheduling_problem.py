@@ -11,3 +11,4 @@ class SchedulingProblem:
     shift_on: pd.DataFrame = None
     shift_off: pd.DataFrame = None
     cover: pd.DataFrame = None
+    stress_threshold: int = 0
