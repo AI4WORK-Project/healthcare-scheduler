@@ -96,7 +96,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Briana",
@@ -122,7 +122,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Sean",
@@ -148,7 +148,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Caitlyn",
@@ -174,7 +174,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Paul",
@@ -200,7 +200,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Barbara",
@@ -226,7 +226,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Kelly",
@@ -252,7 +252,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Jaime",
@@ -278,7 +278,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Jacob",
@@ -304,7 +304,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Chloe",
@@ -330,7 +330,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Diane",
@@ -356,7 +356,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Nancy",
@@ -382,7 +382,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Sandra",
@@ -408,7 +408,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Rachael",
@@ -434,7 +434,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Peter",
@@ -460,7 +460,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Janet",
@@ -486,7 +486,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Joshua",
@@ -512,7 +512,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Melissa",
@@ -538,7 +538,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Patty",
@@ -564,7 +564,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     }
   ],
   "days_off": [
@@ -2993,5 +2993,5 @@
       "weight_for_over": 1
     }
   ],
-  "stress_threshold": 3
+  "stress_threshold": 60
 }

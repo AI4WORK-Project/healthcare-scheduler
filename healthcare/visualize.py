@@ -53,15 +53,30 @@ def visualize(problem: SchedulingProblem, solution: Solution):
         req.index = sums.index
         df.loc[f"Cover {shift_type}"] = sums.astype(str) + "/" + req.astype(str)
 
+    shifts_stress_weights = {
+        shift_name: shift["StressWeight"]
+        for shift_name, shift in problem.shifts.iterrows()
+    }
+    stress = [0] * len(df)
+    for i, (_, nurse) in enumerate(problem.staff.iterrows()):
+        stress[i] = nurse["StressLevel"] + sum(
+            [
+                shifts_stress_weights[s]
+                for s in solution.shift_schedule[i].shifts
+                if s != "-"
+            ]
+        )
+
     df = pd.concat([df, total_shifts], axis=1)
     df["#Minutes"] = total_minutes
+    df["Stress"] = stress
     df = df.fillna(0)
     df["#Shifts"] = df["#Shifts"].astype(int)
     df["#Minutes"] = df["#Minutes"].astype(int)
 
     subset = (
         df.index.tolist()[: -len(problem.shifts)],
-        df.columns[: -(len(real_shifts) + 1)],
+        df.columns[: -(len(real_shifts) + 2)],
     )
     style = df.style.set_table_styles(
         [

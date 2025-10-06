@@ -96,7 +96,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Mathew",
@@ -122,7 +122,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Kristine",
@@ -148,7 +148,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Blake",
@@ -174,7 +174,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Frank",
@@ -200,7 +200,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Ralph",
@@ -226,7 +226,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Timothy",
@@ -252,7 +252,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Hayden",
@@ -278,7 +278,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Alexandra",
@@ -304,7 +304,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Chad",
@@ -330,7 +330,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Cory",
@@ -356,7 +356,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Regina",
@@ -382,7 +382,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Theresa",
@@ -408,7 +408,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Holly",
@@ -434,7 +434,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Patricia",
@@ -460,7 +460,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Courtney",
@@ -486,7 +486,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Terri",
@@ -512,7 +512,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     },
     {
       "employee_id": "Cameron",
@@ -538,7 +538,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 1
+      "stress_level": 10
     }
   ],
   "days_off": [
@@ -2970,5 +2970,5 @@
       "weight_for_over": 1
     }
   ],
-  "stress_threshold": 3
+  "stress_threshold": 60
 }

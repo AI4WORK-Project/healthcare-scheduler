@@ -584,9 +584,8 @@ class NurseSchedulingFactory:
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
             nurse_shifts = self.nurse_view[n]
-            num_shifts = sum(nurse_shifts != FREE)
 
-            accumulated_stress = [nurse["StressLevel"] * 10]
+            accumulated_stress = [nurse["StressLevel"]]
             for day in range(len(nurse_shifts)):
                 for shift in self.shift_name_to_idx.values():
                     if shifts_stress_weights[shift] == 0:
@@ -599,7 +598,7 @@ class NurseSchedulingFactory:
                     #     nurse["StressLevel"] * shifts_stress_weights[shift] * expr
                     # )
 
-            expr = sum(accumulated_stress) < num_shifts * self.data.stress_threshold
+            expr = sum(accumulated_stress) < self.data.stress_threshold
             constraints.append(expr)
 
         return constraints, cp.sum(penalties)
