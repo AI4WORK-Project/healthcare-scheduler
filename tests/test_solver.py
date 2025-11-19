@@ -186,9 +186,9 @@ def assert_shift_off(requests: List[ShiftRequest], solution: Solution):
                 )
 
 
-@pytest.mark.parametrize("instance", list(range(11)))
+@pytest.mark.parametrize("instance", list(range(1, 11)))
 def test_instance(instance: int):
-    instance, solution, objective_value = solve_instance(0, time_limit=60)
+    instance, solution, objective_value = solve_instance(instance, time_limit=60)
 
     assert_cannot_follow(instance, solution)
     assert_max_shifts(instance, solution)
