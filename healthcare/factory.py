@@ -22,6 +22,9 @@ class NurseSchedulingFactory:
         self.idx_to_name = ["-"] + [key for key in self.shift_name_to_idx]
         self.shift_name_to_idx.update({"-": 0})
 
+        self.high_stress_nurses = set(
+            data.staff.index[data.staff["StressLevel"] >= data.stress_threshold]
+        )
         self.nurse_map = list(self.data.staff["# ID"])
 
         weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -135,6 +138,8 @@ class NurseSchedulingFactory:
             ]
             for other_shift in cannot_follow:
                 for n in range(self.n_nurses):
+                    if n in self.high_stress_nurses:
+                        continue
                     for d in range(self.data.horizon - 1):
                         cons = (self.nurse_view[n, d] == t + 1).implies(
                             self.nurse_view[n, d + 1] != other_shift
@@ -163,6 +168,8 @@ class NurseSchedulingFactory:
         constraints = []
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+            if n in self.high_stress_nurses:
+                continue
             for shift_id, shift in self.data.shifts.iterrows():
                 n_shifts = cp.Count(
                     self.nurse_view[n], self.shift_name_to_idx[shift_id]
@@ -192,6 +199,8 @@ class NurseSchedulingFactory:
         shift_length = cp.cpm_array([0] + [l for l in self.data.shifts.Length])
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+            if n in self.high_stress_nurses:
+                continue
             time_worked = cp.sum(shift_length[t] for t in self.nurse_view[n])
             constraint = time_worked <= nurse["MaxTotalMinutes"]
 
@@ -217,6 +226,8 @@ class NurseSchedulingFactory:
         shift_length = cp.cpm_array([0] + [l for l in self.data.shifts.Length])
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+            if n in self.high_stress_nurses:
+                continue
             time_worked = cp.sum(shift_length[t] for t in self.nurse_view[n])
             constraint = time_worked >= nurse["MinTotalMinutes"]
 
@@ -236,6 +247,8 @@ class NurseSchedulingFactory:
         shift_length = cp.cpm_array([0] + [l for l in self.data.shifts.Length])
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+            if n in self.high_stress_nurses:
+                continue
             for i in range(0, self.data.horizon, 7):
                 time_worked = cp.sum(
                     shift_length[t] for t in self.nurse_view[n][i : i + 7]
@@ -258,6 +271,8 @@ class NurseSchedulingFactory:
         shift_length = cp.cpm_array([0] + [l for l in self.data.shifts.Length])
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+            if n in self.high_stress_nurses:
+                continue
             for i in range(0, self.data.horizon, 7):
                 time_worked = cp.sum(
                     shift_length[t] for t in self.nurse_view[n][i : i + 7]
@@ -292,6 +307,8 @@ class NurseSchedulingFactory:
         constraints = []
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+            if n in self.high_stress_nurses:
+                continue
             max_days = nurse["MaxConsecutiveShifts"]
             for i in range(self.data.horizon - max_days):
                 window = self.nurse_view[n][i : i + max_days + 1]
@@ -327,6 +344,8 @@ class NurseSchedulingFactory:
         constraints = []
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+            if n in self.high_stress_nurses:
+                continue
             min_days = nurse["MinConsecutiveShifts"]
             nurse_shifts = self.nurse_view[n]
             for i, shift in enumerate(nurse_shifts):
@@ -369,6 +388,8 @@ class NurseSchedulingFactory:
         constraints = []
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+            if n in self.high_stress_nurses:
+                continue
             max_weekends = nurse["MaxWeekends"]
             shifts = self.nurse_view[n]
             n_weekends = cp.sum([(shifts[sun] != FREE) for sat, sun in self.weekends])
@@ -391,6 +412,8 @@ class NurseSchedulingFactory:
         constraints = []
         for _, holiday in self.data.days_off.iterrows():
             n = self.nurse_map.index(holiday["EmployeeID"])
+            if n in self.high_stress_nurses:
+                continue
             constraint = self.nurse_view[n, holiday["DayIndex"]] == FREE
             constraint.set_description(
                 f"{self.data.staff.iloc[n]['name']} has a day off on {self.days[holiday['DayIndex']]}"
@@ -425,6 +448,8 @@ class NurseSchedulingFactory:
         constraints = []
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+            if n in self.high_stress_nurses:
+                continue
             min_days = nurse["MinConsecutiveDaysOff"]
             nurse_shifts = self.nurse_view[n]
             nurse_constraint = []
@@ -466,6 +491,8 @@ class NurseSchedulingFactory:
         penalty = []
         for _, request in self.data.shift_on.iterrows():
             n = self.nurse_map.index(request["# EmployeeID"])
+            if n in self.high_stress_nurses:
+                continue
             shift = self.shift_name_to_idx[request["ShiftID"]]
             day = request["Day"]
             if formulation == "hard":
@@ -500,6 +527,8 @@ class NurseSchedulingFactory:
         penalty = []
         for _, request in self.data.shift_off.iterrows():
             n = self.nurse_map.index(request["# EmployeeID"])
+            if n in self.high_stress_nurses:
+                continue
             shift = self.shift_name_to_idx[request["ShiftID"]]
             day = request["Day"]
             if formulation == "hard":
@@ -584,6 +613,12 @@ class NurseSchedulingFactory:
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
             nurse_shifts = self.nurse_view[n]
+
+            if n in self.high_stress_nurses:
+                for day in range(len(nurse_shifts)):
+                    expr = nurse_shifts[day] == FREE
+                    constraints.append(expr)
+                continue
 
             accumulated_stress = [nurse["StressLevel"]]
             for day in range(len(nurse_shifts)):

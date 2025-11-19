@@ -539,6 +539,32 @@
             "min_consecutive_days_off": 1,
             "max_weekends": 4,
             "stress_level": 10
+        },
+        {
+            "employee_id": "Rachel",
+            "max_shifts": [
+                {
+                    "shift_id": "AM",
+                    "max_shifts": 20
+                },
+                {
+                    "shift_id": "AA",
+                    "max_shifts": 20
+                },
+                {
+                    "shift_id": "AN",
+                    "max_shifts": 20
+                }
+            ],
+            "max_total_minutes": 9600,
+            "min_total_minutes": 9600,
+            "max_weekly_minutes": 2400,
+            "min_weekly_minutes": 2400,
+            "max_consecutive_shifts": 10,
+            "min_consecutive_shifts": 1,
+            "min_consecutive_days_off": 1,
+            "max_weekends": 4,
+            "stress_level": 100
         }
     ],
     "days_off": [
