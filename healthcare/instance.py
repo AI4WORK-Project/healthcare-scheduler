@@ -12,7 +12,7 @@ class Shift:
     shift_id: str
     length: int
     cannot_follow: List[str]
-    stress_weight: int
+    stress_weight: float
 
     def __post_init__(self):
         self.validate()
@@ -98,7 +98,7 @@ class Staff:
         ), "Min consecutive days off must be greater than or equal to 0"
         assert self.max_weekends >= 0, "Max weekends must be greater than or equal to 0"
 
-        # assert 1 <= self.stress_level <= 3, "Stress level must be between 1 and 3"
+        assert self.stress_level >= 0, "Stress level must be greater than or equal to 0"
 
 
 @dataclass_json

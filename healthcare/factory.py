@@ -452,7 +452,6 @@ class NurseSchedulingFactory:
                 continue
             min_days = nurse["MinConsecutiveDaysOff"]
             nurse_shifts = self.nurse_view[n]
-            nurse_constraint = []
             for i, shift in enumerate(nurse_shifts):
                 if i == 0:  # can never be the first of a free period
                     continue
@@ -606,9 +605,9 @@ class NurseSchedulingFactory:
 
         shifts_stress_weights = [0] * len(self.shift_name_to_idx)
         for shift_id, shift in self.data.shifts.iterrows():
-            shifts_stress_weights[self.shift_name_to_idx[shift_id]] = shift[
-                "StressWeight"
-            ]
+            shifts_stress_weights[self.shift_name_to_idx[shift_id]] = int(
+                shift["StressWeight"] * 10
+            )
 
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
@@ -620,7 +619,7 @@ class NurseSchedulingFactory:
                     constraints.append(expr)
                 continue
 
-            accumulated_stress = [nurse["StressLevel"]]
+            accumulated_stress = [nurse["StressLevel"] * 10]
             for day in range(len(nurse_shifts)):
                 for shift in self.shift_name_to_idx.values():
                     if shifts_stress_weights[shift] == 0:
@@ -633,7 +632,7 @@ class NurseSchedulingFactory:
                     #     nurse["StressLevel"] * shifts_stress_weights[shift] * expr
                     # )
 
-            expr = sum(accumulated_stress) < self.data.stress_threshold
+            expr = sum(accumulated_stress) < self.data.stress_threshold * 10
             constraints.append(expr)
 
         return constraints, cp.sum(penalties)
