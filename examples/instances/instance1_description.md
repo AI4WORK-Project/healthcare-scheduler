@@ -21,6 +21,7 @@ The available shifts are:
 - **AN**: Assistant Nurse, Night 
 
 Each shift lasts 480 minutes (8 hours).
+The `stress_weight` field indicates how much each shift contributes to the nurse's overall stress.
 
 ## Staff
 
@@ -135,8 +136,7 @@ The `cover` section defines the required number of nurses for each shift each da
 ## Stress threshold
 
 The `stress_threshold` field specifies the maximum stress level a nurse is required to stay below.
-
-For each shift, the `stress_weight` field indicates how much that shift contributes to the nurse's overall stress. A nurse's final stress is calculated as their initial stress level plus the sum of the `stress_weight` values for all assigned shifts. The final stress must not exceed the `stress_threshold`.
+A nurse's final stress is calculated as their initial stress level plus the sum of the `stress_weight` values for all assigned shifts. The final stress must not exceed the `stress_threshold`.
 
 ## Use Case Specific Constraints
 
