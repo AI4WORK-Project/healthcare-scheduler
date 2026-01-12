@@ -21,6 +21,7 @@ The available shifts are:
 - **AN**: Assistant Nurse, Night 
 
 Each shift lasts 480 minutes (8 hours).
+The `stress_weight` field indicates how much each shift contributes to the nurse's overall stress.
 
 ## Staff
 
@@ -40,6 +41,7 @@ Megan is a lead nurse with the following constraints and preferences:
 - The `min_consecutive_shifts` field is set to 1.
 - The `min_consecutive_days_off` field is set to 1.
 - The `max_weekends` field is set to 4, so this constraint is always satisfied.
+- The `stress_level` field represents Megan's current stress level
 
 ```json
 {
@@ -65,7 +67,8 @@ Megan is a lead nurse with the following constraints and preferences:
     "max_consecutive_shifts": 10,
     "min_consecutive_shifts": 1,
     "min_consecutive_days_off": 1,
-    "max_weekends": 4
+    "max_weekends": 4,
+    "stress_level": 10
 }
 ```
 
@@ -129,6 +132,11 @@ The `cover` section defines the required number of nurses for each shift each da
     "weight_for_over": 1
 }
 ```
+
+## Stress threshold
+
+The `stress_threshold` field specifies the maximum stress level a nurse is required to stay below.
+A nurse's final stress is calculated as their initial stress level plus the sum of the `stress_weight` values for all assigned shifts. The final stress must not exceed the `stress_threshold`.
 
 ## Use Case Specific Constraints
 

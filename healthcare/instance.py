@@ -12,12 +12,16 @@ class Shift:
     shift_id: str
     length: int
     cannot_follow: List[str]
+    stress_weight: float
 
     def __post_init__(self):
         self.validate()
 
     def validate(self):
         assert self.length > 0, "Shift length must be greater than 0"
+        assert (
+            self.stress_weight >= 0
+        ), "Stress weight must be greater than or equal to 0"
 
 
 @dataclass_json
@@ -46,6 +50,7 @@ class Staff:
     min_consecutive_shifts: int
     min_consecutive_days_off: int
     max_weekends: int
+    stress_level: int
 
     def __post_init__(self):
         self.validate()
@@ -92,6 +97,8 @@ class Staff:
             self.min_consecutive_days_off >= 0
         ), "Min consecutive days off must be greater than or equal to 0"
         assert self.max_weekends >= 0, "Max weekends must be greater than or equal to 0"
+
+        assert self.stress_level >= 0, "Stress level must be greater than or equal to 0"
 
 
 @dataclass_json
@@ -148,6 +155,7 @@ class Instance:
     shift_on_requests: List[ShiftRequest]
     shift_off_requests: List[ShiftRequest]
     cover: List[Cover]
+    stress_threshold: int
 
     def __post_init__(self):
         self.validate()
@@ -196,6 +204,8 @@ class Instance:
             ), "Cover days must be within the horizon"
             assert cover.shift_id in shifts, "Cover shift IDs must be valid"
 
+        assert self.stress_threshold > 0, "The stress threshold must be greater than 0"
+
     def scheduling_problem(self) -> SchedulingProblem:
         problem = SchedulingProblem()
         problem.horizon = self.horizon
@@ -205,6 +215,7 @@ class Instance:
             "shift_id": "ShiftID",
             "length": "Length",
             "cannot_follow": "cannot follow",
+            "stress_weight": "StressWeight",
         }
         problem.shifts.rename(columns=lambda x: names_mapping[x], inplace=True)
         problem.shifts.set_index("ShiftID", inplace=True)
@@ -221,6 +232,7 @@ class Instance:
             "min_consecutive_shifts": "MinConsecutiveShifts",
             "min_consecutive_days_off": "MinConsecutiveDaysOff",
             "max_weekends": "MaxWeekends",
+            "stress_level": "StressLevel",
         }
         problem.staff.rename(columns=lambda x: names_mapping[x], inplace=True)
         problem.staff["name"] = problem.staff["# ID"]
@@ -242,6 +254,7 @@ class Instance:
         problem.days_off = pd.DataFrame(days_off)
 
         problem.shift_on = pd.DataFrame(self.shift_on_requests)
+        problem.shift_off = pd.DataFrame(self.shift_off_requests)
         names_mapping = {
             "employee_id": "# EmployeeID",
             "day": "Day",
@@ -249,8 +262,6 @@ class Instance:
             "weight": "Weight",
         }
         problem.shift_on.rename(columns=lambda x: names_mapping[x], inplace=True)
-
-        problem.shift_off = pd.DataFrame(self.shift_off_requests)
         problem.shift_off.rename(columns=lambda x: names_mapping[x], inplace=True)
 
         problem.cover = pd.DataFrame(self.cover)
@@ -262,5 +273,7 @@ class Instance:
             "weight_for_over": "Weight for over",
         }
         problem.cover.rename(columns=lambda x: names_mapping[x], inplace=True)
+
+        problem.stress_threshold = self.stress_threshold
 
         return problem

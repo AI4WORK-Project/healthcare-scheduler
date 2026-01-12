@@ -4,14 +4,16 @@
     {
       "shift_id": "LM",
       "length": 480,
-      "cannot_follow": []
+      "cannot_follow": [],
+      "stress_weight": 1.0
     },
     {
       "shift_id": "LA",
       "length": 480,
       "cannot_follow": [
         "LM"
-      ]
+      ],
+      "stress_weight": 1.1
     },
     {
       "shift_id": "LN",
@@ -19,19 +21,22 @@
       "cannot_follow": [
         "LM",
         "LA"
-      ]
+      ],
+      "stress_weight": 1.2
     },
     {
       "shift_id": "RM",
       "length": 480,
-      "cannot_follow": []
+      "cannot_follow": [],
+      "stress_weight": 1.0
     },
     {
       "shift_id": "RA",
       "length": 480,
       "cannot_follow": [
         "RM"
-      ]
+      ],
+      "stress_weight": 1.1
     },
     {
       "shift_id": "RN",
@@ -39,19 +44,22 @@
       "cannot_follow": [
         "RM",
         "RA"
-      ]
+      ],
+      "stress_weight": 1.2
     },
     {
       "shift_id": "AM",
       "length": 480,
-      "cannot_follow": []
+      "cannot_follow": [],
+      "stress_weight": 1.0
     },
     {
       "shift_id": "AA",
       "length": 480,
       "cannot_follow": [
         "AM"
-      ]
+      ],
+      "stress_weight": 1.1
     },
     {
       "shift_id": "AN",
@@ -59,7 +67,8 @@
       "cannot_follow": [
         "AM",
         "AA"
-      ]
+      ],
+      "stress_weight": 1.2
     }
   ],
   "staff": [
@@ -86,7 +95,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Dana",
@@ -111,7 +121,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Nicholas",
@@ -136,7 +147,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Jacqueline",
@@ -161,7 +173,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Eileen",
@@ -186,7 +199,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Jonathon",
@@ -211,7 +225,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Eric",
@@ -236,7 +251,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Allison",
@@ -261,7 +277,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Tony",
@@ -286,7 +303,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Anna",
@@ -311,7 +329,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Karla",
@@ -336,7 +355,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Nicole",
@@ -361,7 +381,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Troy",
@@ -386,7 +407,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Steven",
@@ -411,7 +433,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Yvonne",
@@ -436,7 +459,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Valerie",
@@ -461,7 +485,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Erika",
@@ -486,7 +511,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Leslie",
@@ -511,7 +537,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Mackenzie",
@@ -536,7 +563,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     },
     {
       "employee_id": "Connor",
@@ -561,7 +589,8 @@
       "max_consecutive_shifts": 10,
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
-      "max_weekends": 4
+      "max_weekends": 4,
+      "stress_level": 10
     }
   ],
   "days_off": [
@@ -3009,5 +3038,6 @@
       "weight_for_under": 100,
       "weight_for_over": 1
     }
-  ]
+  ],
+  "stress_threshold": 67
 }

@@ -2,6 +2,7 @@ from healthcare import Instance, Solution, NurseSchedulingFactory, SchedulingPro
 from healthcare.visualize import visualize
 import pathlib
 import os
+import json
 
 
 def parse_from_json_file(fname) -> SchedulingProblem:
@@ -29,7 +30,7 @@ def main():
 
         solution = Solution.from_nurse_view(nurse_view.value(), factory)
         with open(solution_path, "w") as f:
-            f.write(solution.to_json())
+            f.write(json.dumps(json.loads(solution.to_json()), indent=4))
 
         style = visualize(problem, solution)
         with open(visualization_path, "w") as f:

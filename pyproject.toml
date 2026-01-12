@@ -6,13 +6,12 @@ build-backend = "setuptools.build_meta"
 name = "healthcare"
 version = "0.1.0"
 dependencies = [
-    "cpmpy==0.9.23",
-    "ortools==9.11.4210",
-    "numpy==1.26.4",
-    "pandas==2.1.4",
-    "matplotlib==3.9.3",
+    "cpmpy==0.9.26",
+    "ortools==9.14.6206",
+    "pandas==2.3.3",
+    "matplotlib==3.10.6",
     "dataclasses-json==0.6.7",
-    "flask==3.1.0",
+    "flask==3.1.2",
     "waitress==3.0.2"
 ]
 
