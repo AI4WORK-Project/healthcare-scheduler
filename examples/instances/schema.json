@@ -24,12 +24,17 @@
                         "items": {
                             "type": "string"
                         }
+                    },
+                    "stress_weight": {
+                        "description": "shift stress weight",
+                        "type": "number"
                     }
                 },
                 "required": [
                     "shift_id",
                     "length",
-                    "cannot_follow"
+                    "cannot_follow",
+                    "stress_weight"
                 ]
             }
         },
@@ -91,6 +96,10 @@
                     "max_weekends": {
                         "description": "maximum number of weekends (a weekend is defined as being worked if there is a shift on the Sunday)",
                         "type": "integer"
+                    },
+                    "stress_level": {
+                        "description": "nurse current stress level",
+                        "type": "integer"
                     }
                 },
                 "required": [
@@ -103,7 +112,8 @@
                     "max_consecutive_shifts",
                     "min_consecutive_shifts",
                     "min_consecutive_days_off",
-                    "max_weekends"
+                    "max_weekends",
+                    "stress_level"
                 ]
             }
         },
@@ -215,6 +225,10 @@
                     "weight_for_over"
                 ]
             }
+        },
+        "stress_threshold": {
+            "description": "stress threshold that each nurse is required to stay below",
+            "type": "integer"
         }
     },
     "required": [
@@ -224,6 +238,7 @@
         "days_off",
         "shift_on_requests",
         "shift_off_requests",
-        "cover"
+        "cover",
+        "stress_threshold"
     ]
 }
