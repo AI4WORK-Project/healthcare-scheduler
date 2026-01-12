@@ -36,9 +36,8 @@ def nurse_scheduled_shifts(
     employee_id: str, solution: Solution
 ) -> Optional[EmployeeShifts]:
     for nurse_schedule in solution.shift_schedule:
-        if nurse_schedule.employee_id != employee_id:
-            continue
-        return nurse_schedule
+        if nurse_schedule.employee_id == employee_id:
+            return nurse_schedule
     return None
 
 
@@ -158,6 +157,22 @@ def assert_max_weekends(instance: Instance, solution: Solution):
         assert working_weekends <= nurse.max_weekends
 
 
+def assert_stress_threshold(instance: Instance, solution: Solution):
+    for nurse in instance.staff:
+        nurse_schedule = nurse_scheduled_shifts(nurse.employee_id, solution)
+        assert nurse_schedule is not None
+
+        if nurse.stress_level >= instance.stress_threshold:
+            assert len(nurse_schedule) == 0
+        else:
+            shifts = {s.shift_id: s for s in instance.shifts}
+            accumulated_stress = nurse.stress_level
+            for shift in nurse_schedule.shifts:
+                if shift != FREE:
+                    accumulated_stress += shifts[shift].stress_weight
+            assert accumulated_stress < instance.stress_threshold
+
+
 def assert_days_off(instance: Instance, solution: Solution):
     for days_off in instance.days_off:
         for shifts in solution.shift_schedule:
@@ -195,7 +210,7 @@ def test_instance(instance: int):
     assert_total_and_weekly_minutes(instance, solution)
     assert_min_max_consecutive_shifts_and_days_off(instance, solution)
     assert_max_weekends(instance, solution)
-
+    assert_stress_threshold(instance, solution)
     assert_days_off(instance, solution)
 
 

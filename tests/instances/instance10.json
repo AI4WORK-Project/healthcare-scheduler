@@ -5,7 +5,7 @@
       "shift_id": "LM",
       "length": 480,
       "cannot_follow": [],
-      "stress_weight": 1
+      "stress_weight": 1.0
     },
     {
       "shift_id": "LA",
@@ -13,7 +13,7 @@
       "cannot_follow": [
         "LM"
       ],
-      "stress_weight": 2
+      "stress_weight": 1.1
     },
     {
       "shift_id": "LN",
@@ -22,13 +22,13 @@
         "LM",
         "LA"
       ],
-      "stress_weight": 3
+      "stress_weight": 1.2
     },
     {
       "shift_id": "RM",
       "length": 480,
       "cannot_follow": [],
-      "stress_weight": 1
+      "stress_weight": 1.0
     },
     {
       "shift_id": "RA",
@@ -36,7 +36,7 @@
       "cannot_follow": [
         "RM"
       ],
-      "stress_weight": 2
+      "stress_weight": 1.1
     },
     {
       "shift_id": "RN",
@@ -45,13 +45,13 @@
         "RM",
         "RA"
       ],
-      "stress_weight": 3
+      "stress_weight": 1.2
     },
     {
       "shift_id": "AM",
       "length": 480,
       "cannot_follow": [],
-      "stress_weight": 1
+      "stress_weight": 1.0
     },
     {
       "shift_id": "AA",
@@ -59,7 +59,7 @@
       "cannot_follow": [
         "AM"
       ],
-      "stress_weight": 2
+      "stress_weight": 1.1
     },
     {
       "shift_id": "AN",
@@ -68,7 +68,7 @@
         "AM",
         "AA"
       ],
-      "stress_weight": 3
+      "stress_weight": 1.2
     }
   ],
   "staff": [
@@ -2940,5 +2940,5 @@
       "weight_for_over": 1
     }
   ],
-  "stress_threshold": 60
+  "stress_threshold": 67
 }
