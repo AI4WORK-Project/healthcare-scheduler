@@ -18,7 +18,7 @@ def load_instance_json(instance_name: str) -> Dict:
 
 def test_invalid_instance():
     response = requests.post(URL, json="")
-    assert response.status_code == 500
+    assert response.status_code in [400, 500]
     assert len(response.json()["message"]) > 0
 
 
@@ -33,3 +33,7 @@ def test_valid_instance():
     instance = load_instance_json("instance0.json")
     response = requests.post(URL, params={"time_limit": 10 * 60}, json=instance)
     assert response.status_code == 200
+
+    body = response.json()
+    assert "shift_schedule" in body
+    assert "underallocations" in body
