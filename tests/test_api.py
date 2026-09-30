@@ -6,6 +6,7 @@ from typing import Dict
 
 
 URL = "http://0.0.0.0:5000/schedule"
+HEALTH_URL = "http://0.0.0.0:5000/health"
 INSTANCES_PATH = os.path.join(pathlib.Path(__file__).parent.resolve(), "instances")
 
 
@@ -14,6 +15,12 @@ def load_instance_json(instance_name: str) -> Dict:
     with open(instance_path, "r") as f:
         instance = json.load(f)
     return instance
+
+
+def test_health():
+    response = requests.get(HEALTH_URL)
+    assert response.status_code == 200
+    assert response.json()["status"] == "healthy"
 
 
 def test_invalid_instance():

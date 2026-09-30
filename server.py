@@ -1,10 +1,21 @@
 import logging
 from flask import Flask, request, Response
 from healthcare import Instance, Solution, NurseSchedulingFactory
+from flask_cors import CORS
 
 logging.basicConfig(level=logging.INFO)
 
 app = Flask("NurseRostering-API")
+CORS(app)
+
+
+@app.route("/health", methods=["GET"])
+def health_check():
+    """
+    Check if the service is alive and reachable.
+    """
+    logging.info("Health check pinged.")
+    return Response('{"status":"healthy"}', mimetype="application/json", status=200)
 
 
 @app.route("/schedule", methods=["POST"])
