@@ -25,6 +25,10 @@ http://0.0.0.0:5000
 
 ## Calling the API
 
+### GET `/health`
+
+Health check: returns `{"status":"healthy"}` if the service is up and reachable.
+
 ### POST `/schedule`
 
 This endpoint accepts a JSON payload representing a scheduling problem and returns the solution.

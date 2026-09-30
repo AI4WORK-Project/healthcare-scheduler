@@ -6,57 +6,63 @@ This document describes the problem defined by the `instance1.json` file.
 
 The scheduling horizon is 28 days (4 weeks).
 
+## Start Date
+
+The `start_date` field (format `YYYY-MM-DD`) is the date of the first day of the horizon (day index 0).
+It is used to compute the weekday of each day, and therefore the weekends and the blocked weekdays.
+In this instance the horizon starts on Monday 2026-06-01.
+The field is optional and defaults to `1970-01-05` (a Monday).
+
 ## Shifts
 
 The available shifts are:
 
-- **LM**: Lead Nurse, Morning
-- **LA**: Lead Nurse, Afternoon
-- **LN**: Lead Nurse, Night
-- **RM**: Registered Nurse, Morning
-- **RA**: Registered Nurse, Afternoon
-- **RN**: Registered Nurse, Night
-- **AM**: Assistant Nurse, Morning
-- **AA**: Assistant Nurse, Afternoon
-- **AN**: Assistant Nurse, Night 
+- **morning**
+- **evening**
+- **night**
+
+Shifts are independent of the nurse's professional role: the role is a property of the nurse (see `role_id` below), and the cover defines how many nurses of each role are required on each shift.
 
 Each shift lasts 480 minutes (8 hours).
 The `stress_weight` field indicates how much each shift contributes to the nurse's overall stress.
 
 ## Staff
 
-The staff comprises:  
+Each nurse has a `role_id`. The staff comprises:  
 
-- 4 lead nurses  
-- 6 registered nurses  
-- 8 assistant nurses  
+- 4 lead nurses (`lead`)  
+- 6 registered nurses (`registered`)  
+- 9 assistant nurses (`assistant`)  
 
 ### Example
 
 Megan is a lead nurse with the following constraints and preferences:
 
-- The `max_shifts` field specifies the shifts she can perform (i.e., **LM**, **LA**, **LN**) and the maximum number of each.  
-- Megan works exactly 9600 minutes (20 shifts) over the 28-day period and 2400 minutes (5 shifts) per week.
+- The `role_id` field is set to `lead`.
+- The `max_shifts` field specifies the shifts she can perform (i.e., **morning**, **evening**, **night**) and the maximum number of each.  
+- Megan can work at most 9600 minutes (20 shifts) over the 28-day period and 2400 minutes (5 shifts) per week.
+- The minimum total and weekly minutes (also 9600 and 2400) are soft targets: if needed to satisfy the cover, the solver may assign her less work, minimising the shortage.
 - The `max_consecutive_shifts` field is set to 10, indicating that Megan can work up to 10 consecutive days.  
 - The `min_consecutive_shifts` field is set to 1.
 - The `min_consecutive_days_off` field is set to 1.
-- The `max_weekends` field is set to 4, so this constraint is always satisfied.
+- The `max_weekends` field is set to 4, so this constraint is always satisfied. A weekend is considered worked if she is assigned a shift on the Saturday or on the Sunday.
 - The `stress_level` field represents Megan's current stress level
 
 ```json
 {
     "employee_id": "Megan",
+    "role_id": "lead",
     "max_shifts": [
         {
-            "shift_id": "LM",
+            "shift_id": "morning",
             "max_shifts": 20
         },
         {
-            "shift_id": "LA",
+            "shift_id": "evening",
             "max_shifts": 20
         },
         {
-            "shift_id": "LN",
+            "shift_id": "night",
             "max_shifts": 20
         }
     ],
@@ -103,7 +109,7 @@ Megan prefers to work the morning shift on the first day. If this shift is not a
 {
     "employee_id": "Megan",
     "day": 0,
-    "shift_id": "LM",
+    "shift_id": "morning",
     "weight": 1
 }
 ```
@@ -116,20 +122,44 @@ The `shift_off_requests` section specifies the shifts an employee prefers not to
 
 ## Cover
 
-The `cover` section defines the required number of nurses for each shift each day.
+The `cover` section defines, for each day and shift, the required number of nurses of each role (`role_requirements`).
 
-- If the number assigned (x) is below the required number then the solution's penalty is `(requirement - x) * weight_for_under`
-- If the total number assigned is more than the required number then the solution's penalty is `(x - requirement) * weight_for_over`
+Cover is a hard constraint: the schedule must contain exactly the required number of nurses for each role and shift.
+A requirement of 0 explicitly prevents nurses of that role from being assigned to the shift.
+Roles not listed in `role_requirements`, and days/shifts without a cover entry, are treated as a requirement of 0: no nurse of that role (or no nurse at all) can be assigned.
+The `weight_for_under` and `weight_for_over` fields are deprecated: they are optional and ignored by the solver.
 
 ### Example
+
+On the first day, the morning shift requires exactly 1 lead nurse, 2 registered nurses and 3 assistant nurses:
 
 ```json
 {
     "day": 0,
-    "shift_id": "LM",
-    "requirement": 1,
-    "weight_for_under": 100,
-    "weight_for_over": 1
+    "shift_id": "morning",
+    "role_requirements": {
+        "lead": 1,
+        "registered": 2,
+        "assistant": 3
+    }
+}
+```
+
+## Blocked Weekdays
+
+The `blocked_weekdays` section defines shifts that must not be assigned to any employee on a given weekday (Monday = 0, ..., Sunday = 6).
+The section is optional; this instance does not block any weekday.
+
+### Example
+
+No night shift is assigned on Sundays:
+
+```json
+{
+    "weekday": 6,
+    "shift_ids": [
+        "night"
+    ]
 }
 ```
 
@@ -137,6 +167,7 @@ The `cover` section defines the required number of nurses for each shift each da
 
 The `stress_threshold` field specifies the maximum stress level a nurse is required to stay below.
 A nurse's final stress is calculated as their initial stress level plus the sum of the `stress_weight` values for all assigned shifts. The final stress must not exceed the `stress_threshold`.
+Nurses whose initial stress level has already reached the threshold (e.g., Rachel) are not assigned any shift.
 
 ## Use Case Specific Constraints
 
@@ -150,28 +181,28 @@ To ensure nurses with health restrictions are not scheduled for inappropriate sh
 
 ### restPeriodCompliance
 
-To ensure that the required rest period (11 hours) between shifts is met, the afternoon shift cannot be followed by the morning shift the next day, and the night shift cannot be followed by the morning or afternoon shifts the next day.
+To ensure that the required rest period (11 hours) between shifts is met, the evening shift cannot be followed by the morning shift the next day, and the night shift cannot be followed by the morning or evening shifts the next day.
 
 Since each nurse is limited to one shift per day, restrictions for shifts on the same day must not be defined.
 
 For example:
-- Shift `LA` (Lead Nurse, Afternoon) cannot be followed by shift `LM` (Lead Nurse, Morning) the next day. It is important not to include `LN` (Lead Nurse, Night) in the `cannot_follow` field, as it would incorrectly refer to the night shift of the following day.
-- Shift `LN` (Lead Nurse, Night) cannot be followed by shifts `LM` (Lead Nurse, Morning) or `LA` (Lead Nurse, Afternoon) the next day.
+- Shift `evening` cannot be followed by shift `morning` the next day. It is important not to include `night` in the `cannot_follow` field, as it would incorrectly refer to the night shift of the following day.
+- Shift `night` cannot be followed by shifts `morning` or `evening` the next day.
 
 ```json
 {
-    "shift_id": "LA",
+    "shift_id": "evening",
     "length": 480,
     "cannot_follow": [
-        "LM"
+        "morning"
     ]
 },
 {
-    "shift_id": "LN",
+    "shift_id": "night",
     "length": 480,
     "cannot_follow": [
-        "LM",
-        "LA"
+        "morning",
+        "evening"
     ]
 }
 ```
