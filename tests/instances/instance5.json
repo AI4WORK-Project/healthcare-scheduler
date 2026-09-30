@@ -1,5 +1,6 @@
 {
   "horizon": 28,
+  "start_date": "1970-01-05",
   "shifts": [
     {
       "shift_id": "LM",
@@ -2929,5 +2930,6 @@
       "weight_for_over": 1
     }
   ],
+  "blocked_weekdays": [],
   "stress_threshold": 67
 }

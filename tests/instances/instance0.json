@@ -1,5 +1,6 @@
 {
     "horizon": 28,
+    "start_date": "2026-05-04",
     "shifts": [
         {
             "shift_id": "LM",
@@ -2534,5 +2535,6 @@
             "weight_for_over": 1
         }
     ],
+    "blocked_weekdays": [],
     "stress_threshold": 67
 }

@@ -6,6 +6,11 @@
             "description": "horizon length in days",
             "type": "integer"
         },
+        "start_date": {
+            "description": "date of the first day of the horizon (YYYY-MM-DD), used to compute weekdays and weekends; defaults to 1970-01-05 (a Monday)",
+            "type": "string",
+            "format": "date"
+        },
         "shifts": {
             "type": "array",
             "items": {
@@ -223,6 +228,32 @@
                     "requirement",
                     "weight_for_under",
                     "weight_for_over"
+                ]
+            }
+        },
+        "blocked_weekdays": {
+            "description": "the specified shifts must not be assigned to any employee on the specified weekday",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "weekday": {
+                        "description": "Monday = 0, Tuesday = 1, ..., Sunday = 6",
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 6
+                    },
+                    "shift_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "weekday",
+                    "shift_ids"
                 ]
             }
         },

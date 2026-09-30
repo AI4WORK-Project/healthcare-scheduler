@@ -5,6 +5,7 @@ import pathlib
 import os
 from typing import Tuple, List, Dict, Optional
 import pytest
+from datetime import datetime, timedelta
 
 
 FREE = "-"
@@ -89,8 +90,8 @@ def assert_total_and_weekly_minutes(instance: Instance, solution: Solution):
         assert total_minutes <= nurse.max_total_minutes
         assert total_minutes >= nurse.min_total_minutes
 
-        for day in range(instance.horizon, 7):
-            week_shifts = nurse_schedule.shifts[day : day + 7]
+        for day in range(0, instance.horizon, 7):
+            week_shifts = nurse_schedule.shifts[day : min(day + 7, instance.horizon)]
             week_durations = map(lambda s: shifts_durations[s], week_shifts)
             total_week_minutes = sum(week_durations)
             assert total_week_minutes <= nurse.max_weekly_minutes
@@ -141,14 +142,24 @@ def assert_min_max_consecutive_shifts_and_days_off(
                 )
 
 
+def weekday_of(instance: Instance, day: int) -> int:
+    start_date = datetime.strptime(instance.start_date, "%Y-%m-%d")
+    return (start_date + timedelta(days=day)).weekday()
+
+
 def assert_max_weekends(instance: Instance, solution: Solution):
+    weekends = [
+        (day, day + 1)
+        for day in range(instance.horizon - 1)
+        if weekday_of(instance, day) == 5
+    ]
+
     for nurse in instance.staff:
         nurse_schedule = nurse_scheduled_shifts(nurse.employee_id, solution)
         assert nurse_schedule is not None
 
         working_weekends = 0
-        for saturday in range(5, instance.horizon, 7):
-            sunday = saturday + 1
+        for saturday, sunday in weekends:
             if (
                 nurse_schedule.shifts[saturday] != FREE
                 or nurse_schedule.shifts[sunday] != FREE
@@ -179,6 +190,15 @@ def assert_days_off(instance: Instance, solution: Solution):
             if shifts.employee_id == days_off.employee_id:
                 for day in days_off.day_indexes:
                     assert shifts.shifts[day] == FREE
+
+
+def assert_blocked_weekdays(instance: Instance, solution: Solution):
+    for blocked in instance.blocked_weekdays:
+        for day in range(instance.horizon):
+            if weekday_of(instance, day) != blocked.weekday:
+                continue
+            for nurse_schedule in solution.shift_schedule:
+                assert nurse_schedule.shifts[day] not in blocked.shift_ids
 
 
 def assert_shift_on(requests: List[ShiftRequest], solution: Solution):
@@ -212,6 +232,7 @@ def test_instance(instance: int):
     assert_max_weekends(instance, solution)
     assert_stress_threshold(instance, solution)
     assert_days_off(instance, solution)
+    assert_blocked_weekdays(instance, solution)
 
 
 def test_instance0():

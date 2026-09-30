@@ -1,21 +1,34 @@
 import cpmpy as cp
 from cpmpy.transformations.normalize import toplevel_list
 
+from datetime import datetime, timedelta
+
 from .scheduling_problem import SchedulingProblem
 
 FREE = 0
 
 
 class NurseSchedulingFactory:
-
     def __init__(self, data: SchedulingProblem):
 
         self.data = data
         self.n_types = len(data.shifts)
         self.n_nurses = len(data.staff)
-        self.weekends = [
-            (i - 1, i) for i in range(data.horizon) if i != 0 and (i + 1) % 7 == 0
-        ]
+
+        self.start_date = datetime.strptime(data.start_date, "%Y-%m-%d")
+
+        self.index_to_date = {
+            i: self.start_date + timedelta(days=i)
+            for i in range(data.horizon)
+        }
+
+        self.date_to_index = {
+            date.strftime("%Y-%m-%d"): idx
+            for idx, date in self.index_to_date.items()
+        }
+
+        self.weekends = self._build_weekends()
+
         self.shift_name_to_idx = {
             name: idx + 1 for idx, (name, _) in enumerate(data.shifts.iterrows())
         }
@@ -27,25 +40,42 @@ class NurseSchedulingFactory:
         )
         self.nurse_map = list(self.data.staff["# ID"])
 
-        weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        self.days = [f"{weekdays[i % 7]} {1 + (i // 7)}" for i in range(data.horizon)]
+        self.days = [
+            self.index_to_date[i].strftime("%a %Y-%m-%d")
+            for i in range(data.horizon)
+        ]
 
-        # decision vars
-        self.nurse_view = cp.intvar(
-            0, self.n_types, shape=(self.n_nurses, data.horizon), name="roster"
-        )
+        self.nurse_view  = cp.intvar(0, self.n_types, shape=(self.n_nurses, data.horizon), name="roster")
+        self.slack_over  = cp.intvar(0, self.n_nurses, shape=(len(self.days), self.n_types))
+        self.slack_under = cp.intvar(0, self.n_nurses, shape=(len(self.days), self.n_types))
 
-        self.slack_over = cp.intvar(
-            0, self.n_nurses, shape=(len(self.days), self.n_types)
-        )
-        self.slack_under = cp.intvar(
-            0, self.n_nurses, shape=(len(self.days), self.n_types)
-        )
-
-        # some visualization stuff
         self.day_off_color = "lightgreen"
-        self.on_request_color = (183, 119, 41)  # copper-ish
-        self.off_request_color = (212, 175, 55)  # gold-ish
+        self.on_request_color = (183, 119, 41)
+        self.off_request_color = (212, 175, 55)
+
+    def _build_weekends(self):
+        weekends = []
+
+        for i, current_date in self.index_to_date.items():
+            if current_date.weekday() == 5:
+                sunday_idx = i + 1
+
+                if sunday_idx < self.data.horizon:
+                    sunday_date = self.index_to_date[sunday_idx]
+
+                    if sunday_date.weekday() == 6:
+                        weekends.append((i, sunday_idx))
+
+        return weekends
+
+    def get_day_indexes_for_weekday(self, weekday: int):
+        """
+        Monday = 0, Tuesday = 1, Wednesday = 2, Thursday = 3, Friday = 4, Saturday = 5, Sunday = 6
+        """
+        return [idx for idx, date in self.index_to_date.items() if date.weekday() == weekday]
+
+    def get_day_indexes_for_dates(self, dates):
+        return [ self.date_to_index[date] for date in dates if date in self.date_to_index]
 
     def get_hard_constraints(self):
         model = cp.Model()
@@ -60,6 +90,7 @@ class NurseSchedulingFactory:
         model += self.weekend_shifts()
         model += self.days_off()
         model += self.min_consecutive_off()
+        model += self.blocked_weekdays()
 
         return model
 
@@ -79,6 +110,7 @@ class NurseSchedulingFactory:
 
         return model, self.nurse_view
 
+
     def get_multi_objective_model(self):
 
         cons_on, penalty_on = self.shift_on_requests(formulation="soft")
@@ -93,6 +125,7 @@ class NurseSchedulingFactory:
         model.constraints = toplevel_list(model.constraints, merge_and=False)
 
         return model, self.nurse_view, penalty_on, penalty_off, penalty_cover
+
 
     def get_decision_model(self):
 
@@ -109,6 +142,7 @@ class NurseSchedulingFactory:
 
         return model, self.nurse_view
 
+
     def get_slack_model(self):
 
         model = self.get_hard_constraints()
@@ -123,56 +157,58 @@ class NurseSchedulingFactory:
 
         return model, self.nurse_view, self.slack_over, self.slack_under
 
+
     def shift_rotation(self):
-        """
-        Shifts which cannot follow the shift on the previous day.
-        This constraint always assumes that the last day of the previous planning period was a day off and
-            the first day of the next planning horizon is a day off.
-        """
         constraints = []
+
         for t, (_, shift) in enumerate(self.data.shifts.iterrows()):
             cannot_follow = [
                 self.shift_name_to_idx[name]
                 for name in shift["cannot follow"]
                 if name != ""
             ]
+
             for other_shift in cannot_follow:
                 for n in range(self.n_nurses):
                     if n in self.high_stress_nurses:
                         continue
+
                     for d in range(self.data.horizon - 1):
                         cons = (self.nurse_view[n, d] == t + 1).implies(
                             self.nurse_view[n, d + 1] != other_shift
                         )
                         cons.set_description(
                             f"None of {shift['cannot follow']} can follow "
-                            f"shift {self.idx_to_name[t+1]} for {self.data.staff.iloc[n]['name']}"
+                            f"shift {self.idx_to_name[t + 1]} for "
+                            f"{self.data.staff.iloc[n]['name']}"
                         )
-                        constraints.append(cons)
                         cons.visualize = lambda style: None
+                        constraints.append(cons)
+
         return constraints
 
     def max_shifts(self):
-        """
-        The maximum number of shifts of each type that can be assigned to each employee.
-        """
 
         def get_visualizer(nurse_idx, shift_id):
             def visualize(styler):
                 styler[("#Shifts", shift_id)].iloc[
                     nurse_idx
-                ] += f"border: 5px dotted red;"
+                ] += "border: 5px dotted red;"
 
             return visualize
 
         constraints = []
+
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+
             if n in self.high_stress_nurses:
                 continue
-            for shift_id, shift in self.data.shifts.iterrows():
+
+            for shift_id, _ in self.data.shifts.iterrows():
                 n_shifts = cp.Count(
-                    self.nurse_view[n], self.shift_name_to_idx[shift_id]
+                    self.nurse_view[n],
+                    self.shift_name_to_idx[shift_id]
                 )
                 max_shifts = nurse[f"max_shifts_{shift_id}"]
                 cons = n_shifts <= max_shifts
@@ -185,9 +221,6 @@ class NurseSchedulingFactory:
         return constraints
 
     def max_minutes(self):
-        """
-        The maximum amount of total time in minutes that can be assigned to each employee.
-        """
 
         def get_visualizer(nurse_idx):
             def visualize(styler):
@@ -197,24 +230,26 @@ class NurseSchedulingFactory:
 
         constraints = []
         shift_length = cp.cpm_array([0] + [l for l in self.data.shifts.Length])
+
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+
             if n in self.high_stress_nurses:
                 continue
+
             time_worked = cp.sum(shift_length[t] for t in self.nurse_view[n])
             constraint = time_worked <= nurse["MaxTotalMinutes"]
 
             constraint.set_description(
-                f"{nurse['name']} cannot work more than {nurse['MaxTotalMinutes']}min"
+                f"{nurse['name']} cannot work more than "
+                f"{nurse['MaxTotalMinutes']}min"
             )
             constraint.visualize = get_visualizer(n)
             constraints.append(constraint)
+
         return constraints
 
     def min_minutes(self):
-        """
-        The minimum amount of total time in minutes that can be assigned to each employee.
-        """
 
         def get_visualizer(nurse_idx):
             def visualize(styler):
@@ -224,79 +259,82 @@ class NurseSchedulingFactory:
 
         constraints = []
         shift_length = cp.cpm_array([0] + [l for l in self.data.shifts.Length])
+
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+
             if n in self.high_stress_nurses:
                 continue
+
             time_worked = cp.sum(shift_length[t] for t in self.nurse_view[n])
             constraint = time_worked >= nurse["MinTotalMinutes"]
 
             constraint.set_description(
-                f"{nurse['name']} should work at least {nurse['MinTotalMinutes']}min"
+                f"{nurse['name']} should work at least "
+                f"{nurse['MinTotalMinutes']}min"
             )
             constraint.visualize = get_visualizer(n)
             constraints.append(constraint)
+
         return constraints
 
     def max_weekly_minutes(self):
-        """
-        The maximum amount of weekly time in minutes that can be assigned to each employee.
-        """
-
         constraints = []
         shift_length = cp.cpm_array([0] + [l for l in self.data.shifts.Length])
+
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+
             if n in self.high_stress_nurses:
                 continue
+
             for i in range(0, self.data.horizon, 7):
-                time_worked = cp.sum(
-                    shift_length[t] for t in self.nurse_view[n][i : i + 7]
-                )
+                window = self.nurse_view[n][i: min(i + 7, self.data.horizon)]
+                time_worked = cp.sum(shift_length[t] for t in window)
                 constraint = time_worked <= nurse["MaxWeeklyMinutes"]
 
                 constraint.set_description(
-                    f"{nurse['name']} cannot work more than {nurse['MaxWeeklyMinutes']}min per week"
+                    f"{nurse['name']} cannot work more than "
+                    f"{nurse['MaxWeeklyMinutes']}min in planning week starting "
+                    f"{self.days[i]}"
                 )
                 constraint.visualize = lambda style: None
                 constraints.append(constraint)
+
         return constraints
 
     def min_weekly_minutes(self):
-        """
-        The minimum amount of weekly time in minutes that can be assigned to each employee.
-        """
-
         constraints = []
         shift_length = cp.cpm_array([0] + [l for l in self.data.shifts.Length])
+
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+
             if n in self.high_stress_nurses:
                 continue
+
             for i in range(0, self.data.horizon, 7):
-                time_worked = cp.sum(
-                    shift_length[t] for t in self.nurse_view[n][i : i + 7]
-                )
+                window = self.nurse_view[n][i: min(i + 7, self.data.horizon)]
+                time_worked = cp.sum(shift_length[t] for t in window)
                 constraint = time_worked >= nurse["MinWeeklyMinutes"]
 
                 constraint.set_description(
-                    f"{nurse['name']} should work at least {nurse['MinTotalMinutes']}min per week"
+                    f"{nurse['name']} should work at least "
+                    f"{nurse['MinWeeklyMinutes']}min in planning week starting "
+                    f"{self.days[i]}"
                 )
                 constraint.visualize = lambda style: None
                 constraints.append(constraint)
+
         return constraints
 
     def max_consecutive(self):
-        """
-        The maximum number of consecutive shifts that can be worked before having a day off.
-        This constraint always assumes that the last day of the previous planning period was a day off
-            and the first day of the next planning period is a day off.
-        """
 
         def get_visualizer(nurse_idx, window):
             def visualize(styler):
                 styler.iloc[nurse_idx, window[0]] += "border-left: 5px solid red;"
                 styler.iloc[nurse_idx, window[-1]] += "border-right: 5px solid red;"
+
                 for day in window:
                     styler.iloc[
                         nurse_idx, day
@@ -305,35 +343,36 @@ class NurseSchedulingFactory:
             return visualize
 
         constraints = []
+
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+
             if n in self.high_stress_nurses:
                 continue
+
             max_days = nurse["MaxConsecutiveShifts"]
+
             for i in range(self.data.horizon - max_days):
-                window = self.nurse_view[n][i : i + max_days + 1]
-                constraint = cp.Count(window, 0) >= 1
+                window_indexes = list(range(i, i + max_days + 1))
+                window = self.nurse_view[n][i: i + max_days + 1]
+                constraint = cp.Count(window, FREE) >= 1
+
                 constraint.set_description(
-                    f"{nurse['name']} can work at most {max_days} days before having a day off"
+                    f"{nurse['name']} can work at most {max_days} days "
+                    f"before having a day off"
                 )
-                constraint.visualize = get_visualizer(
-                    n, list(range(i, i + max_days + 1))
-                )
+                constraint.visualize = get_visualizer(n, window_indexes)
                 constraints.append(constraint)
 
         return constraints
 
     def min_consecutive(self):
-        """
-        The minimum number of shifts that must be worked before having a day off.
-        This constraint always assumes that there are an infinite number of consecutive shifts
-            assigned at the end of the previous planning period and at the start of the next planning period.
-        """
 
         def get_visualizer(nurse_idx, window):
             def visualize(styler):
                 styler.iloc[nurse_idx, window[0]] += "border-left: 5px dotted teal;"
                 styler.iloc[nurse_idx, window[-1]] += "border-right: 5px dotted teal;"
+
                 for day in window:
                     styler.iloc[
                         nurse_idx, day
@@ -342,14 +381,23 @@ class NurseSchedulingFactory:
             return visualize
 
         constraints = []
+
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+
             if n in self.high_stress_nurses:
                 continue
+
             min_days = nurse["MinConsecutiveShifts"]
             nurse_shifts = self.nurse_view[n]
+
             for i, shift in enumerate(nurse_shifts):
-                if i == 0:  # first shift can never be start of working period
+                if i == 0:
+                    continue
+
+                end = min(i + min_days, self.data.horizon)
+
+                if end - i < min_days:
                     continue
 
                 is_start_of_working_period = (shift != FREE) & (
@@ -357,48 +405,65 @@ class NurseSchedulingFactory:
                 )
 
                 constraint = is_start_of_working_period.implies(
-                    cp.all(nurse_shifts[i : i + min_days] != FREE)
+                    cp.all(nurse_shifts[i:end] != FREE)
                 )
+
                 constraint.set_description(
-                    f"{nurse['name']} should work at least {min_days} days before having a day off"
+                    f"{nurse['name']} should work at least {min_days} days "
+                    f"before having a day off"
                 )
-                constraint.visualize = get_visualizer(n, list(range(i, i + min_days)))
+                constraint.visualize = get_visualizer(n, list(range(i, end)))
                 constraints.append(constraint)
 
         return constraints
 
     def weekend_shifts(self):
-        """
-        Max nb of working weekends for each nurse.
-        A weekend is defined as being worked if there is a shift on the Sunday.
-        """
 
         def get_visualizer(nurse_idx):
             def visualize(styler):
                 for sat, sun in self.weekends:
                     styler.iloc[
                         nurse_idx, sat
-                    ] += "border-left: 5px solid indigo; border-top: 5px solid indigo; border-bottom: 5px solid indigo;"
+                    ] += (
+                        "border-left: 5px solid indigo; "
+                        "border-top: 5px solid indigo; "
+                        "border-bottom: 5px solid indigo;"
+                    )
                     styler.iloc[
                         nurse_idx, sun
-                    ] += "border-right: 5px solid indigo; border-top: 5px solid indigo; border-bottom: 5px solid indigo;"
+                    ] += (
+                        "border-right: 5px solid indigo; "
+                        "border-top: 5px solid indigo; "
+                        "border-bottom: 5px solid indigo;"
+                    )
 
             return visualize
 
         constraints = []
+
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+
             if n in self.high_stress_nurses:
                 continue
+
             max_weekends = nurse["MaxWeekends"]
             shifts = self.nurse_view[n]
-            n_weekends = cp.sum([(shifts[sun] != FREE) for sat, sun in self.weekends])
+
+            n_weekends = cp.sum(
+                [
+                    ((shifts[sat] != FREE) | (shifts[sun] != FREE))
+                    for sat, sun in self.weekends
+                ]
+            )
+
             constraint = n_weekends <= max_weekends
             constraint.set_description(
                 f"{nurse['name']} should work at most {max_weekends} weekends"
             )
             constraint.visualize = get_visualizer(n)
             constraints.append(constraint)
+
         return constraints
 
     def days_off(self):
@@ -410,25 +475,61 @@ class NurseSchedulingFactory:
             return visualize
 
         constraints = []
+
+        if self.data.days_off is None or self.data.days_off.empty:
+            return constraints
+
         for _, holiday in self.data.days_off.iterrows():
             n = self.nurse_map.index(holiday["EmployeeID"])
+
             if n in self.high_stress_nurses:
                 continue
-            constraint = self.nurse_view[n, holiday["DayIndex"]] == FREE
+
+            day = int(holiday["DayIndex"])
+            constraint = self.nurse_view[n, day] == FREE
             constraint.set_description(
-                f"{self.data.staff.iloc[n]['name']} has a day off on {self.days[holiday['DayIndex']]}"
+                f"{self.data.staff.iloc[n]['name']} has a day off on "
+                f"{self.days[day]}"
             )
-            constraint.visualize = get_visualizer(n, holiday["DayIndex"])
+            constraint.visualize = get_visualizer(n, day)
             constraints.append(constraint)
 
         return constraints
 
+    def blocked_weekdays(self):
+        constraints = []
+
+        if (
+            not hasattr(self.data, "blocked_weekdays")
+            or self.data.blocked_weekdays is None
+            or self.data.blocked_weekdays.empty
+        ):
+            return constraints
+
+        for _, blocked in self.data.blocked_weekdays.iterrows():
+            weekday = int(blocked["weekday"])
+            shift_ids = blocked["shift_ids"]
+
+            day_indexes = self.get_day_indexes_for_weekday(weekday)
+
+            for day in day_indexes:
+                for shift_id in shift_ids:
+                    shift_idx = self.shift_name_to_idx[shift_id]
+
+                    expr = cp.Count(
+                        self.nurse_view[:, day],
+                        shift_idx
+                    ) == 0
+
+                    expr.set_description(
+                        f"Shift {shift_id} is forbidden on {self.days[day]}"
+                    )
+                    expr.visualize = lambda style: None
+                    constraints.append(expr)
+
+        return constraints
+
     def min_consecutive_off(self):
-        """
-        The minimum number of consecutive days off that must be assigned before assigning a shift.
-        This constraint always assumes that there are an infinite number of consecutive days off assigned
-            at the end of the previous planning period and at the start of the next planning period.
-        """
 
         def get_visualizer(nurse_idx, window):
             def visualize(styler):
@@ -438,22 +539,35 @@ class NurseSchedulingFactory:
                 styler.iloc[
                     nurse_idx, window[-1]
                 ] += "border-right: 5px dotted lightgreen;"
+
                 for day in window:
                     styler.iloc[
                         nurse_idx, day
-                    ] += "border-top: 5px dotted lightgreen; border-bottom: 5px dotted lightgreen;"
+                    ] += (
+                        "border-top: 5px dotted lightgreen; "
+                        "border-bottom: 5px dotted lightgreen;"
+                    )
 
             return visualize
 
         constraints = []
+
         for _, nurse in self.data.staff.iterrows():
             n = self.nurse_map.index(nurse["# ID"])
+
             if n in self.high_stress_nurses:
                 continue
+
             min_days = nurse["MinConsecutiveDaysOff"]
             nurse_shifts = self.nurse_view[n]
+
             for i, shift in enumerate(nurse_shifts):
-                if i == 0:  # can never be the first of a free period
+                if i == 0:
+                    continue
+
+                end = min(i + min_days, self.data.horizon)
+
+                if end - i < min_days:
                     continue
 
                 is_start_of_free_period = (shift == FREE) & (
@@ -461,24 +575,19 @@ class NurseSchedulingFactory:
                 )
 
                 constraint = is_start_of_free_period.implies(
-                    cp.all(nurse_shifts[i : i + min_days] == FREE)
+                    cp.all(nurse_shifts[i:end] == FREE)
                 )
+
                 constraint.set_description(
-                    f"{nurse['name']} should have at least {min_days} consecutive days off"
+                    f"{nurse['name']} should have at least {min_days} "
+                    f"consecutive days off"
                 )
-                constraint.visualize = get_visualizer(n, list(range(i, i + min_days)))
+                constraint.visualize = get_visualizer(n, list(range(i, end)))
                 constraints.append(constraint)
 
         return constraints
 
     def shift_on_requests(self, formulation="soft"):
-        """
-        If the specified shift is not assigned to the specified employee on the specified day
-            then the solution's penalty is the specified weight value.
-
-        :param: decision: If False, returns a numerical expression with the penalties
-                           if True, returns a set of constraints requiring the request to be satisfied
-        """
 
         def get_visualizer(nurse_idx, day):
             def visualize(styler):
@@ -488,33 +597,38 @@ class NurseSchedulingFactory:
 
         constraints = []
         penalty = []
+
+        if self.data.shift_on is None or self.data.shift_on.empty:
+            return constraints, cp.sum(penalty)
+
         for _, request in self.data.shift_on.iterrows():
             n = self.nurse_map.index(request["# EmployeeID"])
+
             if n in self.high_stress_nurses:
                 continue
+
             shift = self.shift_name_to_idx[request["ShiftID"]]
-            day = request["Day"]
+            day = int(request["Day"])
+
             if formulation == "hard":
                 constraint = self.nurse_view[n, day] == shift
                 constraint.set_description(
-                    f"{self.data.staff.iloc[n]['name']} requests to work shift {self.idx_to_name[shift]} on {self.days[day]}"
+                    f"{self.data.staff.iloc[n]['name']} requests to work shift "
+                    f"{self.idx_to_name[shift]} on {self.days[day]}"
                 )
                 constraint.visualize = get_visualizer(n, day)
                 constraints.append(constraint)
-            else:  # penalty
+            else:
                 expr = self.nurse_view[n, day] != shift
                 expr.set_description(
-                    f"Deny {self.data.staff.iloc[n]['name']}'s request to work shift {self.idx_to_name[shift]} on {self.days[day]}"
+                    f"Deny {self.data.staff.iloc[n]['name']}'s request to work "
+                    f"shift {self.idx_to_name[shift]} on {self.days[day]}"
                 )
                 penalty.append(request["Weight"] * expr)
 
         return constraints, cp.sum(penalty)
 
     def shift_off_requests(self, formulation="soft"):
-        """
-        If the specified shift is assigned to the specified employee on the specified day
-            then the solution's penalty is the weight value.
-        """
 
         def get_visualizer(nurse_idx, day):
             def visualize(styler):
@@ -524,46 +638,49 @@ class NurseSchedulingFactory:
 
         constraints = []
         penalty = []
+
+        if self.data.shift_off is None or self.data.shift_off.empty:
+            return constraints, cp.sum(penalty)
+
         for _, request in self.data.shift_off.iterrows():
             n = self.nurse_map.index(request["# EmployeeID"])
+
             if n in self.high_stress_nurses:
                 continue
+
             shift = self.shift_name_to_idx[request["ShiftID"]]
-            day = request["Day"]
+            day = int(request["Day"])
+
             if formulation == "hard":
                 constraint = self.nurse_view[n, day] != shift
                 constraint.set_description(
-                    f"{self.data.staff.iloc[n]['name']} requests not to work shift {self.idx_to_name[shift]} on {self.days[day]}"
+                    f"{self.data.staff.iloc[n]['name']} requests not to work "
+                    f"shift {self.idx_to_name[shift]} on {self.days[day]}"
                 )
                 constraint.visualize = get_visualizer(n, day)
                 constraints.append(constraint)
-            else:  # penalty
+            else:
                 expr = self.nurse_view[n, day] == shift
                 expr.set_description(
-                    f"Deny {self.data.staff.iloc[n]['name']}'s request not to work shift {self.idx_to_name[shift]} on {self.days[day]}"
+                    f"Deny {self.data.staff.iloc[n]['name']}'s request not to work "
+                    f"shift {self.idx_to_name[shift]} on {self.days[day]}"
                 )
                 penalty.append(request["Weight"] * expr)
 
         return constraints, cp.sum(penalty)
 
     def cover(self, formulation="soft"):
-        """
-        If the required number of staff on the specified day for the specified shift is not assigned
-            then it is a soft constraint violation
-
-        :param: formulation: the formulation used. Can be any of "penalty", "slack", or "hard"
-                                - slack:
-                                - hard:
-        """
 
         def get_visualizer(day, shift):
 
             def visualize(styler):
                 styler.iloc[0, day] += "border-top: 5px solid red;"
+
                 for n in range(self.n_nurses):
                     styler.iloc[
                         n, day
                     ] += "border-left: 5px solid red; border-right: 5px solid red;"
+
                 styler.iloc[n, day] += "border-bottom: 5px solid red;"
                 styler.iloc[n + shift, day] += "border: 5px solid red;"
 
@@ -571,11 +688,17 @@ class NurseSchedulingFactory:
 
         constraints = []
         penalties = []
+
+        if self.data.cover is None or self.data.cover.empty:
+            return constraints, cp.sum(penalties)
+
         for _, cover in self.data.cover.iterrows():
             shift = self.shift_name_to_idx[cover["ShiftID"]]
             requirement = cover["Requirement"]
-            day = cover["# Day"]
+            day = int(cover["# Day"])
+
             nb_nurses = cp.Count(self.nurse_view[:, day], shift)
+
             if formulation == "soft":
                 slack_over = self.slack_over[day, shift - 1]
                 slack_under = self.slack_under[day, shift - 1]
@@ -587,13 +710,16 @@ class NurseSchedulingFactory:
                 slack_over, slack_under = 0, 0
             else:
                 raise ValueError(
-                    f"Unexpected formulation for constraint. Should be 'penalty', 'slack', or 'hard' but got {formulation}"
+                    "Unexpected formulation for constraint. "
+                    "Should be 'soft' or 'hard' "
+                    f"but got {formulation}"
                 )
 
             expr = nb_nurses + (-slack_over) + slack_under == requirement
             expr.visualize = get_visualizer(day, shift)
             expr.set_description(
-                f"Shift {cover['ShiftID']} on {self.days[day]} must be covered by {requirement} nurses out of {len(self.nurse_view)}"
+                f"Shift {cover['ShiftID']} on {self.days[day]} must be covered "
+                f"by {requirement} nurses out of {len(self.nurse_view)}"
             )
             constraints.append(expr)
 
@@ -604,6 +730,7 @@ class NurseSchedulingFactory:
         penalties = []
 
         shifts_stress_weights = [0] * len(self.shift_name_to_idx)
+
         for shift_id, shift in self.data.shifts.iterrows():
             shifts_stress_weights[self.shift_name_to_idx[shift_id]] = int(
                 shift["StressWeight"] * 10
@@ -615,22 +742,20 @@ class NurseSchedulingFactory:
 
             if n in self.high_stress_nurses:
                 for day in range(len(nurse_shifts)):
-                    expr = nurse_shifts[day] == FREE
-                    constraints.append(expr)
+                    constraints.append(nurse_shifts[day] == FREE)
                 continue
 
             accumulated_stress = [nurse["StressLevel"] * 10]
+
             for day in range(len(nurse_shifts)):
                 for shift in self.shift_name_to_idx.values():
                     if shifts_stress_weights[shift] == 0:
                         continue
+
                     accumulated_stress.append(
-                        (nurse_shifts[day] == shift) * shifts_stress_weights[shift]
+                        (nurse_shifts[day] == shift)
+                        * shifts_stress_weights[shift]
                     )
-                    # expr = nurse_shifts[day] == shift
-                    # penalties.append(
-                    #     nurse["StressLevel"] * shifts_stress_weights[shift] * expr
-                    # )
 
             expr = sum(accumulated_stress) < self.data.stress_threshold * 10
             constraints.append(expr)
@@ -639,7 +764,4 @@ class NurseSchedulingFactory:
 
 
 def is_not_none(*args):
-    if any(a is None for a in args):
-        return False
-    else:
-        return True
+    return not any(a is None for a in args)

@@ -6,6 +6,13 @@ This document describes the problem defined by the `instance1.json` file.
 
 The scheduling horizon is 28 days (4 weeks).
 
+## Start Date
+
+The `start_date` field (format `YYYY-MM-DD`) is the date of the first day of the horizon (day index 0).
+It is used to compute the weekday of each day, and therefore the weekends and the blocked weekdays.
+In this instance the horizon starts on Monday 2026-06-01.
+The field is optional and defaults to `1970-01-05` (a Monday).
+
 ## Shifts
 
 The available shifts are:
@@ -130,6 +137,26 @@ The `cover` section defines the required number of nurses for each shift each da
     "requirement": 1,
     "weight_for_under": 100,
     "weight_for_over": 1
+}
+```
+
+## Blocked Weekdays
+
+The `blocked_weekdays` section defines shifts that must not be assigned to any employee on a given weekday (Monday = 0, ..., Sunday = 6).
+The section is optional; this instance does not block any weekday.
+
+### Example
+
+No night shift is assigned on Sundays:
+
+```json
+{
+    "weekday": 6,
+    "shift_ids": [
+        "LN",
+        "RN",
+        "AN"
+    ]
 }
 ```
 
