@@ -87,7 +87,7 @@
                         "type": "integer"
                     },
                     "min_weekly_minutes": {
-                        "description": "minimum amount of weekly time in minutes that should be assigned to the employee; soft: the shortage is minimised and reported in the solution underallocations",
+                        "description": "minimum amount of weekly time in minutes that should be assigned to the employee, where weeks are 7-day blocks from start_date and the minimum of a final partial block is prorated by its number of days; soft: the shortage is minimised and reported in the solution underallocations",
                         "type": "integer"
                     },
                     "max_consecutive_shifts": {
@@ -103,7 +103,7 @@
                         "type": "integer"
                     },
                     "max_weekends": {
-                        "description": "maximum number of weekends (a weekend is worked if there is a shift on the Saturday or on the Sunday)",
+                        "description": "maximum number of weekends (a weekend is worked if there is a shift on the Saturday or on the Sunday; a Saturday or Sunday whose other weekend day falls outside the horizon counts as a weekend on its own)",
                         "type": "integer"
                     },
                     "stress_level": {
@@ -273,6 +273,24 @@
         "stress_threshold": {
             "description": "stress threshold that each nurse is required to stay below",
             "type": "integer"
+        },
+        "underallocation_weights": {
+            "description": "objective weights for the shortage against the soft minimum workload, as cost per missing minute; compare them with the shift request weights, e.g. one missing 480-minute shift costs 480 * weight; non-integer values are truncated to integers, as for the other integer fields",
+            "type": "object",
+            "properties": {
+                "total": {
+                    "description": "cost per minute missing from min_total_minutes",
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 1
+                },
+                "weekly": {
+                    "description": "cost per minute missing from min_weekly_minutes, in each planning week",
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 1
+                }
+            }
         }
     },
     "required": [

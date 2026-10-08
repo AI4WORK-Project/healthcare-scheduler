@@ -1,7 +1,7 @@
 import cpmpy as cp
 from cpmpy.transformations.normalize import toplevel_list
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Optional
 
 from .scheduling_problem import SchedulingProblem
 
@@ -72,19 +72,38 @@ class NurseSchedulingFactory:
         return None
 
     def _build_weekends(self):
-        weekends = []
+        """
+        Weekends as tuples of the Saturday/Sunday indexes inside the horizon.
+        A weekend cut by the horizon (starting on Sunday or ending on Saturday)
+        is kept with its only day.
+        """
+        weekends = {}
 
         for i, current_date in self.index_to_date.items():
-            if current_date.weekday() == 5:
-                sunday_idx = i + 1
+            weekday = current_date.weekday()
 
-                if sunday_idx < self.data.horizon:
-                    sunday_date = self.index_to_date[sunday_idx]
+            if weekday >= 5:
+                saturday_idx = i - (weekday - 5)
+                weekends.setdefault(saturday_idx, []).append(i)
 
-                    if sunday_date.weekday() == 6:
-                        weekends.append((i, sunday_idx))
+        return [tuple(days) for _, days in sorted(weekends.items())]
 
-        return weekends
+    def week_blocks(self):
+        """
+        Planning weeks as (start, end) blocks of 7 days from the first day
+        of the horizon; the last block may be shorter.
+        """
+        return [
+            (start, min(start + 7, self.data.horizon))
+            for start in range(0, self.data.horizon, 7)
+        ]
+
+    def prorated_min_weekly(self, min_weekly, start, end):
+        """
+        Weekly minimum for the block [start, end), prorated by the number of
+        days when the block is shorter than a week.
+        """
+        return int(min_weekly) * (end - start) // 7
 
     def get_day_indexes_for_weekday(self, weekday: int):
         return [
@@ -383,7 +402,10 @@ class NurseSchedulingFactory:
 
         return constraints
 
-    def min_minutes_soft(self, penalty_weight: int = 1):
+    def min_minutes_soft(self, penalty_weight: Optional[int] = None):
+        if penalty_weight is None:
+            penalty_weight = self.data.underallocation_weight_total
+
         constraints = []
         penalties = []
 
@@ -432,8 +454,7 @@ class NurseSchedulingFactory:
             if n in self.high_stress_nurses:
                 continue
 
-            for i in range(0, self.data.horizon, 7):
-                week_end = min(i + 7, self.data.horizon)
+            for i, week_end in self.week_blocks():
                 window = self.nurse_view[n][i:week_end]
 
                 time_worked = cp.sum(
@@ -470,21 +491,23 @@ class NurseSchedulingFactory:
             if n in self.high_stress_nurses:
                 continue
 
-            for i in range(0, self.data.horizon, 7):
-                week_end = min(i + 7, self.data.horizon)
+            for i, week_end in self.week_blocks():
                 window = self.nurse_view[n][i:week_end]
+                min_weekly = self.prorated_min_weekly(
+                    nurse["MinWeeklyMinutes"], i, week_end
+                )
 
                 time_worked = cp.sum(
                     shift_length[t]
                     for t in window
                 )
 
-                constraint = time_worked >= nurse["MinWeeklyMinutes"]
+                constraint = time_worked >= min_weekly
 
                 self._describe(
                     constraint,
                     f"{nurse['name']} should work at least "
-                    f"{nurse['MinWeeklyMinutes']}min in planning week starting "
+                    f"{min_weekly}min in planning week starting "
                     f"{self.days[i]}",
                 )
                 self._visualize(constraint, self._noop_visualizer)
@@ -492,7 +515,10 @@ class NurseSchedulingFactory:
 
         return constraints
 
-    def min_weekly_minutes_soft(self, penalty_weight: int = 1):
+    def min_weekly_minutes_soft(self, penalty_weight: Optional[int] = None):
+        if penalty_weight is None:
+            penalty_weight = self.data.underallocation_weight_weekly
+
         constraints = []
         penalties = []
 
@@ -504,11 +530,11 @@ class NurseSchedulingFactory:
             if n in self.high_stress_nurses:
                 continue
 
-            min_weekly = int(nurse["MinWeeklyMinutes"])
-
-            for i in range(0, self.data.horizon, 7):
-                week_end = min(i + 7, self.data.horizon)
+            for i, week_end in self.week_blocks():
                 window = self.nurse_view[n][i:week_end]
+                min_weekly = self.prorated_min_weekly(
+                    nurse["MinWeeklyMinutes"], i, week_end
+                )
 
                 time_worked = cp.sum(
                     shift_length[t]
@@ -654,17 +680,19 @@ class NurseSchedulingFactory:
 
         def get_visualizer(nurse_idx):
             def visualize(styler):
-                for sat, sun in self.weekends:
-                    styler.iloc[nurse_idx, sat] += (
-                        "border-left: 5px solid indigo; "
-                        "border-top: 5px solid indigo; "
-                        "border-bottom: 5px solid indigo;"
+                for weekend in self.weekends:
+                    styler.iloc[nurse_idx, weekend[0]] += (
+                        "border-left: 5px solid indigo;"
                     )
-                    styler.iloc[nurse_idx, sun] += (
-                        "border-right: 5px solid indigo; "
-                        "border-top: 5px solid indigo; "
-                        "border-bottom: 5px solid indigo;"
+                    styler.iloc[nurse_idx, weekend[-1]] += (
+                        "border-right: 5px solid indigo;"
                     )
+
+                    for day in weekend:
+                        styler.iloc[nurse_idx, day] += (
+                            "border-top: 5px solid indigo; "
+                            "border-bottom: 5px solid indigo;"
+                        )
 
             return visualize
 
@@ -681,8 +709,8 @@ class NurseSchedulingFactory:
 
             n_weekends = cp.sum(
                 [
-                    ((shifts[sat] != FREE) | (shifts[sun] != FREE))
-                    for sat, sun in self.weekends
+                    cp.any([shifts[day] != FREE for day in weekend])
+                    for weekend in self.weekends
                 ]
             )
 

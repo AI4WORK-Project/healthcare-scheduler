@@ -16,3 +16,6 @@ class SchedulingProblem:
     blocked_weekdays: pd.DataFrame = None  # type: ignore
 
     stress_threshold: int = 0
+
+    underallocation_weight_total: int = 1
+    underallocation_weight_weekly: int = 1

@@ -1,5 +1,5 @@
 from healthcare import Instance, Solution, NurseSchedulingFactory
-from healthcare.instance import ShiftRequest
+from healthcare.instance import ShiftRequest, UnderallocationWeights
 from healthcare.solution import EmployeeShifts
 import pathlib
 import os
@@ -197,9 +197,12 @@ def assert_total_and_weekly_minutes(
 
             assert total_week_minutes <= nurse.max_weekly_minutes
 
+            # The minimum of a final partial week is prorated by its days
+            min_weekly = nurse.min_weekly_minutes * (week_end - week_start) // 7
+
             expected_under_weekly = max(
                 0,
-                nurse.min_weekly_minutes - total_week_minutes,
+                min_weekly - total_week_minutes,
             )
 
             reported_week = next(
@@ -209,7 +212,7 @@ def assert_total_and_weekly_minutes(
             )
 
             assert reported_week.assigned_minutes == total_week_minutes
-            assert reported_week.min_weekly_minutes == nurse.min_weekly_minutes
+            assert reported_week.min_weekly_minutes == min_weekly
             assert reported_week.under_weekly_minutes == expected_under_weekly
 
 
@@ -279,21 +282,14 @@ def assert_max_weekends(
         "%Y-%m-%d",
     )
 
-    weekend_pairs = []
+    # A Saturday or Sunday cut by the horizon counts as a weekend on its own
+    weekends = {}
 
     for day in range(instance.horizon):
-        current_date = start_date + timedelta(days=day)
+        weekday = (start_date + timedelta(days=day)).weekday()
 
-        if current_date.weekday() == 5:
-            sunday = day + 1
-
-            if sunday < instance.horizon:
-                sunday_date = start_date + timedelta(days=sunday)
-
-                if sunday_date.weekday() == 6:
-                    weekend_pairs.append(
-                        (day, sunday)
-                    )
+        if weekday >= 5:
+            weekends.setdefault(day - (weekday - 5), []).append(day)
 
     for nurse in instance.staff:
         nurse_schedule = nurse_scheduled_shifts(
@@ -305,11 +301,8 @@ def assert_max_weekends(
 
         working_weekends = 0
 
-        for saturday, sunday in weekend_pairs:
-            if (
-                nurse_schedule.shifts[saturday] != FREE
-                or nurse_schedule.shifts[sunday] != FREE
-            ):
+        for weekend in weekends.values():
+            if any(nurse_schedule.shifts[day] != FREE for day in weekend):
                 working_weekends += 1
 
         assert working_weekends <= nurse.max_weekends
@@ -532,3 +525,188 @@ def test_cover_weights_are_optional():
 
     with pytest.warns(DeprecationWarning):
         Instance.from_dict(load_instance_dict(1))
+
+
+def small_instance_dict(horizon: int, start_date: str, staff: List[Dict]) -> Dict:
+    """
+    Minimal instance with a single morning shift and no requests.
+    Each staff entry only needs employee_id, plus the fields to override.
+    """
+
+    def nurse(fields: Dict) -> Dict:
+        return {
+            "role_id": "registered",
+            "max_shifts": [{"shift_id": "morning", "max_shifts": horizon}],
+            "max_total_minutes": 480 * max(horizon, 7),
+            "min_total_minutes": 0,
+            "max_weekly_minutes": 480 * 7,
+            "min_weekly_minutes": 0,
+            "max_consecutive_shifts": horizon,
+            "min_consecutive_shifts": 1,
+            "min_consecutive_days_off": 1,
+            "max_weekends": horizon,
+            "stress_level": 0,
+            **fields,
+        }
+
+    return {
+        "horizon": horizon,
+        "start_date": start_date,
+        "shifts": [
+            {
+                "shift_id": "morning",
+                "length": 480,
+                "cannot_follow": [],
+                "stress_weight": 0.0,
+            }
+        ],
+        "staff": [nurse(fields) for fields in staff],
+        "days_off": [],
+        "shift_on_requests": [],
+        "shift_off_requests": [],
+        "cover": [],
+        "stress_threshold": 100,
+    }
+
+
+def test_partial_weekends_at_horizon_edges():
+    """
+    A Saturday or Sunday cut by the horizon is a weekend on its own.
+    """
+
+    # 2026-10-04 is a Sunday: Sun | Sat Sun | Sat
+    instance: Instance = Instance.from_dict(  # type: ignore
+        small_instance_dict(14, "2026-10-04", [{"employee_id": "A"}])
+    )
+    factory = NurseSchedulingFactory(instance.scheduling_problem())
+
+    assert factory.weekends == [(0,), (6, 7), (13,)]
+
+
+@pytest.mark.parametrize(
+    "start_date, weekend_day",
+    [
+        ("2026-10-04", 0),  # starts on Sunday
+        ("2026-10-08", 2),  # Thu, Fri, Sat: ends on Saturday
+    ],
+)
+def test_partial_weekend_counts_towards_max_weekends(
+    start_date: str,
+    weekend_day: int,
+):
+    instance_dict = small_instance_dict(
+        3,
+        start_date,
+        [
+            {"employee_id": "A", "max_weekends": 0},
+            {"employee_id": "B", "max_weekends": 1},
+        ],
+    )
+    instance_dict["cover"] = [
+        {
+            "day": weekend_day,
+            "shift_id": "morning",
+            "role_requirements": {"registered": 1},
+        }
+    ]
+
+    instance: Instance = Instance.from_dict(instance_dict)  # type: ignore
+    instance, solution, objective_value = solve_instance_obj(instance, time_limit=60)
+
+    assert nurse_scheduled_shifts("A", solution).shifts[weekend_day] == FREE  # type: ignore
+    assert nurse_scheduled_shifts("B", solution).shifts[weekend_day] == "morning"  # type: ignore
+    assert_max_weekends(instance, solution)
+
+
+def test_final_partial_week_min_is_prorated():
+    """
+    With a 10-day horizon the last planning week has 3 days, so its weekly
+    minimum is prorated to 3/7 of the full one.
+    """
+
+    min_weekly = 2400
+
+    instance: Instance = Instance.from_dict(  # type: ignore
+        small_instance_dict(
+            10,
+            "2026-10-05",
+            [
+                {
+                    "employee_id": "A",
+                    "min_total_minutes": min_weekly,
+                    "min_weekly_minutes": min_weekly,
+                }
+            ],
+        )
+    )
+
+    # Without cover nobody can work, so every minimum is fully missed
+    instance, solution, objective_value = solve_instance_obj(instance, time_limit=60)
+
+    prorated = min_weekly * 3 // 7
+    weekly = solution.underallocations[0].weekly
+
+    assert [w.min_weekly_minutes for w in weekly] == [min_weekly, prorated]
+    assert [w.under_weekly_minutes for w in weekly] == [min_weekly, prorated]
+    assert objective_value == min_weekly + min_weekly + prorated
+    assert_total_and_weekly_minutes(instance, solution)
+
+
+@pytest.mark.parametrize(
+    "weights, expected_worker",
+    [
+        (None, "A"),  # default: 480 missing minutes outweigh one request
+        ({"total": 0, "weekly": 0}, "B"),  # no cost for missing minutes
+    ],
+)
+def test_underallocation_weights(weights: Optional[Dict], expected_worker: str):
+    """
+    A asks not to work the only covered shift, but needs it to reach the
+    minimum workload: the underallocation weights decide who works it.
+    """
+
+    instance_dict = small_instance_dict(
+        7,
+        "2026-10-05",
+        [
+            {"employee_id": "A", "min_total_minutes": 480},
+            {"employee_id": "B"},
+        ],
+    )
+    instance_dict["cover"] = [
+        {
+            "day": 0,
+            "shift_id": "morning",
+            "role_requirements": {"registered": 1},
+        }
+    ]
+    instance_dict["shift_off_requests"] = [
+        {"employee_id": "A", "day": 0, "shift_id": "morning", "weight": 1}
+    ]
+
+    if weights is not None:
+        instance_dict["underallocation_weights"] = weights
+
+    instance: Instance = Instance.from_dict(instance_dict)  # type: ignore
+    instance, solution, objective_value = solve_instance_obj(instance, time_limit=60)
+
+    assert nurse_scheduled_shifts(expected_worker, solution).shifts[0] == "morning"  # type: ignore
+
+
+@pytest.mark.parametrize(
+    "weights",
+    [{"total": -1}, {"weekly": -1}, {"weekly": True}],
+)
+def test_underallocation_weights_validation(weights: Dict):
+    instance_dict = small_instance_dict(7, "2026-10-05", [{"employee_id": "A"}])
+    instance_dict["underallocation_weights"] = weights
+
+    with pytest.raises(AssertionError):
+        Instance.from_dict(instance_dict)
+
+
+def test_underallocation_weights_reject_floats():
+    # From JSON, dataclasses_json truncates floats to int before validation,
+    # so floats are only rejected when the weights are built in Python
+    with pytest.raises(AssertionError):
+        UnderallocationWeights(total=1.5)  # type: ignore

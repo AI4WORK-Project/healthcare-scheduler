@@ -103,8 +103,7 @@ class Solution:
 
             weekly_underallocations = []
 
-            for week_start in range(0, factory.data.horizon, 7):
-                week_end = min(week_start + 7, factory.data.horizon)
+            for week_start, week_end in factory.week_blocks():
                 week_shifts = shifts[week_start:week_end]
 
                 week_assigned_minutes = sum(
@@ -113,7 +112,9 @@ class Solution:
                     if shift_id != "-"
                 )
 
-                min_weekly_minutes = int(nurse["MinWeeklyMinutes"])
+                min_weekly_minutes = factory.prorated_min_weekly(
+                    nurse["MinWeeklyMinutes"], week_start, week_end
+                )
 
                 under_weekly_minutes = max(
                     0,

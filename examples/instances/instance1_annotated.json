@@ -53,11 +53,11 @@
             "max_total_minutes": 9600, // maximum amount of total time in minutes that can be assigned to the employee
             "min_total_minutes": 9600, // minimum amount of total time in minutes that should be assigned to the employee (soft)
             "max_weekly_minutes": 2400, // maximum amount of weekly time in minutes that can be assigned to the employee
-            "min_weekly_minutes": 2400, // minimum amount of weekly time in minutes that should be assigned to the employee (soft)
+            "min_weekly_minutes": 2400, // minimum amount of weekly time in minutes that should be assigned to the employee (soft), per 7-day planning week from start_date; prorated for a final partial week
             "max_consecutive_shifts": 10, // maximum number of consecutive shifts that can be worked before having a day off
             "min_consecutive_shifts": 1, // minimum number of consecutive shifts that can be worked before having a day off
             "min_consecutive_days_off": 1, // minimum number of consecutive days off that must be assigned before assigning a shift
-            "max_weekends": 4, // maximum number of weekends (a weekend is worked if there is a shift on the Saturday or on the Sunday)
+            "max_weekends": 4, // maximum number of weekends (a weekend is worked if there is a shift on the Saturday or on the Sunday; a Saturday or Sunday at the edge of the horizon counts on its own)
             "stress_level": 10 // nurse current stress level
         },
         {
@@ -1529,6 +1529,12 @@
     // the specified shifts must not be assigned to anyone on the specified
     // weekday (Monday = 0, ..., Sunday = 6); optional, defaults to []
     "blocked_weekdays": [],
+
+    // Underallocation weights
+    // cost per minute missing from the soft minimum workload (total and per
+    // planning week), compared with the shift request weights; optional,
+    // defaults to {"total": 1, "weekly": 1}
+    "underallocation_weights": {"total": 1, "weekly": 1},
 
     "stress_threshold": 67 // stress threshold that each nurse is required to stay below
 }

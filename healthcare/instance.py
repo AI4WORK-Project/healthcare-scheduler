@@ -195,6 +195,30 @@ class BlockedWeekday:
 
 @dataclass_json
 @dataclass
+class UnderallocationWeights:
+    # cost per missing minute against min_total_minutes
+    total: int = 1
+    # cost per missing minute against the (prorated) min_weekly_minutes
+    weekly: int = 1
+
+    def __post_init__(self):
+        self.validate()
+
+    def validate(self):
+        for name in ("total", "weekly"):
+            value = getattr(self, name)
+
+            assert isinstance(value, int) and not isinstance(value, bool), (
+                f"{name.capitalize()} underallocation weight must be an integer"
+            )
+            assert value >= 0, (
+                f"{name.capitalize()} underallocation weight must be greater "
+                "than or equal to 0"
+            )
+
+
+@dataclass_json
+@dataclass
 class Instance:
     horizon: int
     shifts: List[Shift]
@@ -207,6 +231,9 @@ class Instance:
 
     start_date: str = "1970-01-05"
     blocked_weekdays: List[BlockedWeekday] = field(default_factory=list)
+    underallocation_weights: UnderallocationWeights = field(
+        default_factory=UnderallocationWeights
+    )
 
     def __post_init__(self):
         self.validate()
@@ -416,5 +443,8 @@ class Instance:
         )
 
         problem.stress_threshold = self.stress_threshold
+
+        problem.underallocation_weight_total = self.underallocation_weights.total
+        problem.underallocation_weight_weekly = self.underallocation_weights.weekly
 
         return problem
