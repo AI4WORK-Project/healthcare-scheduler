@@ -24,7 +24,7 @@ The available shifts are:
 Shifts are independent of the nurse's professional role: the role is a property of the nurse (see `role_id` below), and the cover defines how many nurses of each role are required on each shift.
 
 Each shift lasts 480 minutes (8 hours).
-The `stress_weight` field indicates how much each shift contributes to the nurse's overall stress.
+The `workload_weight` field indicates how much each shift contributes to the nurse's overall workload.
 
 ## Staff
 
@@ -47,7 +47,7 @@ Megan is a lead nurse with the following constraints and preferences:
 - The `min_consecutive_shifts` field is set to 1.
 - The `min_consecutive_days_off` field is set to 1.
 - The `max_weekends` field is set to 4, so this constraint is always satisfied. A weekend is considered worked if she is assigned a shift on the Saturday or on the Sunday; a Saturday or Sunday at the edge of the horizon counts as a weekend on its own.
-- The `stress_level` field represents Megan's current stress level
+- The `workload_level` field represents Megan's current workload level
 
 ```json
 {
@@ -75,7 +75,7 @@ Megan is a lead nurse with the following constraints and preferences:
     "min_consecutive_shifts": 1,
     "min_consecutive_days_off": 1,
     "max_weekends": 4,
-    "stress_level": 10
+    "workload_level": 10
 }
 ```
 
@@ -164,15 +164,15 @@ No night shift is assigned on Sundays:
 }
 ```
 
-## Stress threshold
+## Workload threshold
 
-The `stress_threshold` field specifies the maximum stress level a nurse is required to stay below.
-A nurse's final stress is calculated as their initial stress level plus the sum of the `stress_weight` values for all assigned shifts. The final stress must not exceed the `stress_threshold`.
-Nurses whose initial stress level has already reached the threshold (e.g., Rachel) are not assigned any shift.
+The `workload_threshold` field specifies the maximum workload level a nurse is required to stay below.
+A nurse's final workload is calculated as their initial workload level plus the sum of the `workload_weight` values for all assigned shifts. The final workload must not exceed the `workload_threshold`.
+Nurses whose initial workload level has already reached the threshold (e.g., Rachel) are not assigned any shift.
 
 ## Underallocation Weights
 
-The `underallocation_weights` field sets how much the shortage against the soft minimum workload costs in the objective:
+The `underallocation_weights` field sets how much the shortage against the soft minimum working minutes costs in the objective:
 
 - `total`: cost per minute missing from `min_total_minutes`;
 - `weekly`: cost per minute missing from the minimum of each planning week.

@@ -5,7 +5,7 @@
       "shift_id": "morning",
       "length": 480,
       "cannot_follow": [],
-      "stress_weight": 1.0
+      "workload_weight": 1.0
     },
     {
       "shift_id": "evening",
@@ -13,7 +13,7 @@
       "cannot_follow": [
         "morning"
       ],
-      "stress_weight": 1.1
+      "workload_weight": 1.1
     },
     {
       "shift_id": "night",
@@ -22,7 +22,7 @@
         "morning",
         "evening"
       ],
-      "stress_weight": 1.2
+      "workload_weight": 1.2
     }
   ],
   "staff": [
@@ -50,7 +50,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "lead"
     },
     {
@@ -77,7 +77,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "lead"
     },
     {
@@ -104,7 +104,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "lead"
     },
     {
@@ -131,7 +131,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "lead"
     },
     {
@@ -158,7 +158,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "registered"
     },
     {
@@ -185,7 +185,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "registered"
     },
     {
@@ -212,7 +212,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "registered"
     },
     {
@@ -239,7 +239,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "registered"
     },
     {
@@ -266,7 +266,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "registered"
     },
     {
@@ -293,7 +293,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "registered"
     },
     {
@@ -320,7 +320,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "assistant"
     },
     {
@@ -347,7 +347,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "assistant"
     },
     {
@@ -374,7 +374,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "assistant"
     },
     {
@@ -401,7 +401,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "assistant"
     },
     {
@@ -428,7 +428,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "assistant"
     },
     {
@@ -455,7 +455,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "assistant"
     },
     {
@@ -482,7 +482,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "assistant"
     },
     {
@@ -509,7 +509,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10,
+      "workload_level": 10,
       "role_id": "assistant"
     },
     {
@@ -536,7 +536,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 100,
+      "workload_level": 100,
       "role_id": "assistant"
     }
   ],
@@ -1667,7 +1667,7 @@
       "weight_for_over": 1
     }
   ],
-  "stress_threshold": 67,
+  "workload_threshold": 67,
   "start_date": "2026-05-04",
   "blocked_weekdays": []
 }

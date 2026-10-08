@@ -308,7 +308,7 @@ def assert_max_weekends(
         assert working_weekends <= nurse.max_weekends
 
 
-def assert_stress_threshold(
+def assert_workload_threshold(
     instance: Instance,
     solution: Solution,
 ):
@@ -320,7 +320,7 @@ def assert_stress_threshold(
 
         assert nurse_schedule is not None
 
-        if nurse.stress_level >= instance.stress_threshold:
+        if nurse.workload_level >= instance.workload_threshold:
             assert all(
                 shift == FREE
                 for shift in nurse_schedule.shifts
@@ -331,13 +331,13 @@ def assert_stress_threshold(
                 for s in instance.shifts
             }
 
-            accumulated_stress = nurse.stress_level
+            accumulated_workload = nurse.workload_level
 
             for shift in nurse_schedule.shifts:
                 if shift != FREE:
-                    accumulated_stress += shifts[shift].stress_weight
+                    accumulated_workload += shifts[shift].workload_weight
 
-            assert accumulated_stress < instance.stress_threshold
+            assert accumulated_workload < instance.workload_threshold
 
 
 def assert_days_off(
@@ -440,7 +440,7 @@ def test_instance(instance: int):
     assert_total_and_weekly_minutes(instance, solution) # type: ignore
     assert_min_max_consecutive_shifts_and_days_off(instance, solution) # type: ignore
     assert_max_weekends(instance, solution) # type: ignore
-    assert_stress_threshold(instance, solution) # type: ignore
+    assert_workload_threshold(instance, solution) # type: ignore
     assert_days_off(instance, solution) # type: ignore
     assert_blocked_weekdays(instance, solution) # type: ignore
     assert_role_cover(instance, solution) # type: ignore
@@ -545,7 +545,7 @@ def small_instance_dict(horizon: int, start_date: str, staff: List[Dict]) -> Dic
             "min_consecutive_shifts": 1,
             "min_consecutive_days_off": 1,
             "max_weekends": horizon,
-            "stress_level": 0,
+            "workload_level": 0,
             **fields,
         }
 
@@ -557,7 +557,7 @@ def small_instance_dict(horizon: int, start_date: str, staff: List[Dict]) -> Dic
                 "shift_id": "morning",
                 "length": 480,
                 "cannot_follow": [],
-                "stress_weight": 0.0,
+                "workload_weight": 0.0,
             }
         ],
         "staff": [nurse(fields) for fields in staff],
@@ -565,7 +565,7 @@ def small_instance_dict(horizon: int, start_date: str, staff: List[Dict]) -> Dic
         "shift_on_requests": [],
         "shift_off_requests": [],
         "cover": [],
-        "stress_threshold": 100,
+        "workload_threshold": 100,
     }
 
 
@@ -662,7 +662,7 @@ def test_final_partial_week_min_is_prorated():
 def test_underallocation_weights(weights: Optional[Dict], expected_worker: str):
     """
     A asks not to work the only covered shift, but needs it to reach the
-    minimum workload: the underallocation weights decide who works it.
+    minimum working minutes: the underallocation weights decide who works it.
     """
 
     instance_dict = small_instance_dict(

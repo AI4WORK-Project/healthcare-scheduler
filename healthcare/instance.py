@@ -14,7 +14,7 @@ class Shift:
     shift_id: str
     length: int
     cannot_follow: List[str]
-    stress_weight: float
+    workload_weight: float
 
     def __post_init__(self):
         self.validate()
@@ -22,8 +22,8 @@ class Shift:
     def validate(self):
         assert self.shift_id != "", "Shift ID must not be empty"
         assert self.length > 0, "Shift length must be greater than 0"
-        assert self.stress_weight >= 0, (
-            "Stress weight must be greater than or equal to 0"
+        assert self.workload_weight >= 0, (
+            "Workload weight must be greater than or equal to 0"
         )
 
 
@@ -57,7 +57,7 @@ class Staff:
     min_consecutive_shifts: int
     min_consecutive_days_off: int
     max_weekends: int
-    stress_level: int
+    workload_level: int
 
     def __post_init__(self):
         self.validate()
@@ -109,8 +109,8 @@ class Staff:
         assert self.max_weekends >= 0, (
             "Max weekends must be greater than or equal to 0"
         )
-        assert self.stress_level >= 0, (
-            "Stress level must be greater than or equal to 0"
+        assert self.workload_level >= 0, (
+            "Workload level must be greater than or equal to 0"
         )
 
 
@@ -227,7 +227,7 @@ class Instance:
     shift_on_requests: List[ShiftRequest]
     shift_off_requests: List[ShiftRequest]
     cover: List[Cover]
-    stress_threshold: int
+    workload_threshold: int
 
     start_date: str = "1970-01-05"
     blocked_weekdays: List[BlockedWeekday] = field(default_factory=list)
@@ -324,8 +324,8 @@ class Instance:
                     "Blocked weekday shift IDs must be valid"
                 )
 
-        assert self.stress_threshold > 0, (
-            "Stress threshold must be greater than 0"
+        assert self.workload_threshold > 0, (
+            "Workload threshold must be greater than 0"
         )
 
     def scheduling_problem(self) -> SchedulingProblem:
@@ -339,7 +339,7 @@ class Instance:
                 "shift_id": "ShiftID",
                 "length": "Length",
                 "cannot_follow": "cannot follow",
-                "stress_weight": "StressWeight",
+                "workload_weight": "WorkloadWeight",
             },
             inplace=True,
         )
@@ -359,7 +359,7 @@ class Instance:
                 "min_consecutive_shifts": "MinConsecutiveShifts",
                 "min_consecutive_days_off": "MinConsecutiveDaysOff",
                 "max_weekends": "MaxWeekends",
-                "stress_level": "StressLevel",
+                "workload_level": "WorkloadLevel",
             },
             inplace=True,
         )
@@ -442,7 +442,7 @@ class Instance:
             columns=["weekday", "shift_ids"],
         )
 
-        problem.stress_threshold = self.stress_threshold
+        problem.workload_threshold = self.workload_threshold
 
         problem.underallocation_weight_total = self.underallocation_weights.total
         problem.underallocation_weight_weekly = self.underallocation_weights.weekly

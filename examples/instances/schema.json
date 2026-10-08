@@ -30,8 +30,8 @@
                             "type": "string"
                         }
                     },
-                    "stress_weight": {
-                        "description": "shift stress weight",
+                    "workload_weight": {
+                        "description": "shift workload weight",
                         "type": "number"
                     }
                 },
@@ -39,7 +39,7 @@
                     "shift_id",
                     "length",
                     "cannot_follow",
-                    "stress_weight"
+                    "workload_weight"
                 ]
             }
         },
@@ -106,8 +106,8 @@
                         "description": "maximum number of weekends (a weekend is worked if there is a shift on the Saturday or on the Sunday; a Saturday or Sunday whose other weekend day falls outside the horizon counts as a weekend on its own)",
                         "type": "integer"
                     },
-                    "stress_level": {
-                        "description": "nurse current stress level",
+                    "workload_level": {
+                        "description": "nurse current workload level",
                         "type": "integer"
                     }
                 },
@@ -123,7 +123,7 @@
                     "min_consecutive_shifts",
                     "min_consecutive_days_off",
                     "max_weekends",
-                    "stress_level"
+                    "workload_level"
                 ]
             }
         },
@@ -270,12 +270,12 @@
                 ]
             }
         },
-        "stress_threshold": {
-            "description": "stress threshold that each nurse is required to stay below",
+        "workload_threshold": {
+            "description": "workload threshold that each nurse is required to stay below",
             "type": "integer"
         },
         "underallocation_weights": {
-            "description": "objective weights for the shortage against the soft minimum workload, as cost per missing minute; compare them with the shift request weights, e.g. one missing 480-minute shift costs 480 * weight; non-integer values are truncated to integers, as for the other integer fields",
+            "description": "objective weights for the shortage against the soft minimum working minutes, as cost per missing minute; compare them with the shift request weights, e.g. one missing 480-minute shift costs 480 * weight; non-integer values are truncated to integers, as for the other integer fields",
             "type": "object",
             "properties": {
                 "total": {
@@ -301,6 +301,6 @@
         "shift_on_requests",
         "shift_off_requests",
         "cover",
-        "stress_threshold"
+        "workload_threshold"
     ]
 }

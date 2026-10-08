@@ -104,13 +104,13 @@ def visualize(problem: SchedulingProblem, solution: Solution):
             df.loc[row_name] = values
 
 
-    shifts_stress_weights = { shift_name: shift["StressWeight"] for shift_name, shift in problem.shifts.iterrows()}
-    stress = [0] * len(problem.staff)
+    shifts_workload_weights = { shift_name: shift["WorkloadWeight"] for shift_name, shift in problem.shifts.iterrows()}
+    workload = [0] * len(problem.staff)
 
     for i, (_, nurse) in enumerate(problem.staff.iterrows()):
-        stress[i] = nurse["StressLevel"] + sum(
+        workload[i] = nurse["WorkloadLevel"] + sum(
             [
-                shifts_stress_weights[s]
+                shifts_workload_weights[s]
                 for s in solution.shift_schedule[i].shifts
                 if s != "-"
             ]
@@ -141,7 +141,7 @@ def visualize(problem: SchedulingProblem, solution: Solution):
 
     df = pd.concat([df, total_shifts], axis=1)
     df["#Minutes"] = total_minutes
-    df["Stress"] = pd.Series(stress, index=staff_index)
+    df["Workload"] = pd.Series(workload, index=staff_index)
     df["UnderMinShifts"] = pd.Series(under_total_shifts, index=staff_index)
     df["UnderMinMinutes"] = pd.Series(under_total_minutes, index=staff_index)
 
