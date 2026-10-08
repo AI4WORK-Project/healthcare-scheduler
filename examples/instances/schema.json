@@ -6,6 +6,11 @@
             "description": "horizon length in days",
             "type": "integer"
         },
+        "start_date": {
+            "description": "date of the first day of the horizon (YYYY-MM-DD), used to compute weekdays and weekends; defaults to 1970-01-05 (a Monday)",
+            "type": "string",
+            "format": "date"
+        },
         "shifts": {
             "type": "array",
             "items": {
@@ -25,8 +30,8 @@
                             "type": "string"
                         }
                     },
-                    "stress_weight": {
-                        "description": "shift stress weight",
+                    "workload_weight": {
+                        "description": "shift workload weight",
                         "type": "number"
                     }
                 },
@@ -34,7 +39,7 @@
                     "shift_id",
                     "length",
                     "cannot_follow",
-                    "stress_weight"
+                    "workload_weight"
                 ]
             }
         },
@@ -44,6 +49,10 @@
                 "type": "object",
                 "properties": {
                     "employee_id": {
+                        "type": "string"
+                    },
+                    "role_id": {
+                        "description": "professional role of the employee (e.g. lead, registered, assistant), used by the cover role requirements",
                         "type": "string"
                     },
                     "max_shifts": {
@@ -70,7 +79,7 @@
                         "type": "integer"
                     },
                     "min_total_minutes": {
-                        "description": "minimum amount of total time in minutes that can be assigned to the employee",
+                        "description": "minimum amount of total time in minutes that should be assigned to the employee; soft: the shortage is minimised and reported in the solution underallocations",
                         "type": "integer"
                     },
                     "max_weekly_minutes": {
@@ -78,7 +87,7 @@
                         "type": "integer"
                     },
                     "min_weekly_minutes": {
-                        "description": "minimum amount of weekly time in minutes that can be assigned to the employee",
+                        "description": "minimum amount of weekly time in minutes that should be assigned to the employee, where weeks are 7-day blocks from start_date and the minimum of a final partial block is prorated by its number of days; soft: the shortage is minimised and reported in the solution underallocations",
                         "type": "integer"
                     },
                     "max_consecutive_shifts": {
@@ -94,16 +103,17 @@
                         "type": "integer"
                     },
                     "max_weekends": {
-                        "description": "maximum number of weekends (a weekend is defined as being worked if there is a shift on the Sunday)",
+                        "description": "maximum number of weekends (a weekend is worked if there is a shift on the Saturday or on the Sunday; a Saturday or Sunday whose other weekend day falls outside the horizon counts as a weekend on its own)",
                         "type": "integer"
                     },
-                    "stress_level": {
-                        "description": "nurse current stress level",
+                    "workload_level": {
+                        "description": "nurse current workload level",
                         "type": "integer"
                     }
                 },
                 "required": [
                     "employee_id",
+                    "role_id",
                     "max_shifts",
                     "max_total_minutes",
                     "min_total_minutes",
@@ -113,7 +123,7 @@
                     "min_consecutive_shifts",
                     "min_consecutive_days_off",
                     "max_weekends",
-                    "stress_level"
+                    "workload_level"
                 ]
             }
         },
@@ -196,7 +206,7 @@
             }
         },
         "cover": {
-            "description": "if the required number of staﬀ on the specified day for the specified shift is not assigned, the penalty is (requirement - x) * weight_for_under or (x - requirement) * weight_for_over, where x is the number of staff assigned",
+            "description": "for each day and shift, exactly role_requirements[role] employees with that role must be assigned (hard constraint); a requirement of 0 means that no employee with that role can be assigned; roles not listed in role_requirements, and days/shifts without a cover entry, are treated as a requirement of 0",
             "type": "array",
             "items": {
                 "type": "object",
@@ -207,28 +217,80 @@
                     "shift_id": {
                         "type": "string"
                     },
-                    "requirement": {
-                        "type": "integer"
+                    "role_requirements": {
+                        "description": "required number of employees for each role",
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        "minProperties": 1
                     },
                     "weight_for_under": {
-                        "type": "integer"
+                        "type": "integer",
+                        "description": "Deprecated: ignored by the solver since cover is exact",
+                        "deprecated": true
                     },
                     "weight_for_over": {
-                        "type": "integer"
+                        "type": "integer",
+                        "description": "Deprecated: ignored by the solver since cover is exact",
+                        "deprecated": true
                     }
                 },
                 "required": [
                     "day",
                     "shift_id",
-                    "requirement",
-                    "weight_for_under",
-                    "weight_for_over"
+                    "role_requirements"
                 ]
             }
         },
-        "stress_threshold": {
-            "description": "stress threshold that each nurse is required to stay below",
+        "blocked_weekdays": {
+            "description": "the specified shifts must not be assigned to any employee on the specified weekday",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "weekday": {
+                        "description": "Monday = 0, Tuesday = 1, ..., Sunday = 6",
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 6
+                    },
+                    "shift_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "minItems": 1
+                    }
+                },
+                "required": [
+                    "weekday",
+                    "shift_ids"
+                ]
+            }
+        },
+        "workload_threshold": {
+            "description": "workload threshold that each nurse is required to stay below",
             "type": "integer"
+        },
+        "underallocation_weights": {
+            "description": "objective weights for the shortage against the soft minimum working minutes, as cost per missing minute; compare them with the shift request weights, e.g. one missing 480-minute shift costs 480 * weight; non-integer values are truncated to integers, as for the other integer fields",
+            "type": "object",
+            "properties": {
+                "total": {
+                    "description": "cost per minute missing from min_total_minutes",
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 1
+                },
+                "weekly": {
+                    "description": "cost per minute missing from min_weekly_minutes, in each planning week",
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 1
+                }
+            }
         }
     },
     "required": [
@@ -239,6 +301,6 @@
         "shift_on_requests",
         "shift_off_requests",
         "cover",
-        "stress_threshold"
+        "workload_threshold"
     ]
 }

@@ -1,90 +1,46 @@
 {
   "horizon": 28,
+  "start_date": "1970-01-05",
   "shifts": [
     {
-      "shift_id": "LM",
+      "shift_id": "morning",
       "length": 480,
       "cannot_follow": [],
-      "stress_weight": 1.0
+      "workload_weight": 1.0
     },
     {
-      "shift_id": "LA",
+      "shift_id": "evening",
       "length": 480,
       "cannot_follow": [
-        "LM"
+        "morning"
       ],
-      "stress_weight": 1.1
+      "workload_weight": 1.1
     },
     {
-      "shift_id": "LN",
+      "shift_id": "night",
       "length": 480,
       "cannot_follow": [
-        "LM",
-        "LA"
+        "morning",
+        "evening"
       ],
-      "stress_weight": 1.2
-    },
-    {
-      "shift_id": "RM",
-      "length": 480,
-      "cannot_follow": [],
-      "stress_weight": 1.0
-    },
-    {
-      "shift_id": "RA",
-      "length": 480,
-      "cannot_follow": [
-        "RM"
-      ],
-      "stress_weight": 1.1
-    },
-    {
-      "shift_id": "RN",
-      "length": 480,
-      "cannot_follow": [
-        "RM",
-        "RA"
-      ],
-      "stress_weight": 1.2
-    },
-    {
-      "shift_id": "AM",
-      "length": 480,
-      "cannot_follow": [],
-      "stress_weight": 1.0
-    },
-    {
-      "shift_id": "AA",
-      "length": 480,
-      "cannot_follow": [
-        "AM"
-      ],
-      "stress_weight": 1.1
-    },
-    {
-      "shift_id": "AN",
-      "length": 480,
-      "cannot_follow": [
-        "AM",
-        "AA"
-      ],
-      "stress_weight": 1.2
+      "workload_weight": 1.2
     }
   ],
   "staff": [
     {
       "employee_id": "Carrie",
+      "role_id": "lead",
       "max_shifts": [
         {
-          "shift_id": "LM",
+          "shift_id": "morning",
           "max_shifts": 20
         },
         {
-          "shift_id": "LA",
+          "shift_id": "evening",
           "max_shifts": 20
         },
         {
-          "shift_id": "LN",
+          "shift_id": "night",
           "max_shifts": 20
         }
       ],
@@ -96,21 +52,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Briana",
+      "role_id": "lead",
       "max_shifts": [
         {
-          "shift_id": "LM",
+          "shift_id": "morning",
           "max_shifts": 12
         },
         {
-          "shift_id": "LA",
+          "shift_id": "evening",
           "max_shifts": 12
         },
         {
-          "shift_id": "LN",
+          "shift_id": "night",
           "max_shifts": 12
         }
       ],
@@ -122,21 +79,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Sean",
+      "role_id": "lead",
       "max_shifts": [
         {
-          "shift_id": "LM",
+          "shift_id": "morning",
           "max_shifts": 12
         },
         {
-          "shift_id": "LA",
+          "shift_id": "evening",
           "max_shifts": 12
         },
         {
-          "shift_id": "LN",
+          "shift_id": "night",
           "max_shifts": 12
         }
       ],
@@ -148,21 +106,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Caitlyn",
+      "role_id": "lead",
       "max_shifts": [
         {
-          "shift_id": "LM",
+          "shift_id": "morning",
           "max_shifts": 16
         },
         {
-          "shift_id": "LA",
+          "shift_id": "evening",
           "max_shifts": 16
         },
         {
-          "shift_id": "LN",
+          "shift_id": "night",
           "max_shifts": 16
         }
       ],
@@ -174,21 +133,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Paul",
+      "role_id": "lead",
       "max_shifts": [
         {
-          "shift_id": "LM",
+          "shift_id": "morning",
           "max_shifts": 16
         },
         {
-          "shift_id": "LA",
+          "shift_id": "evening",
           "max_shifts": 16
         },
         {
-          "shift_id": "LN",
+          "shift_id": "night",
           "max_shifts": 16
         }
       ],
@@ -200,21 +160,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Barbara",
+      "role_id": "registered",
       "max_shifts": [
         {
-          "shift_id": "RM",
+          "shift_id": "morning",
           "max_shifts": 12
         },
         {
-          "shift_id": "RA",
+          "shift_id": "evening",
           "max_shifts": 12
         },
         {
-          "shift_id": "RN",
+          "shift_id": "night",
           "max_shifts": 12
         }
       ],
@@ -226,21 +187,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Kelly",
+      "role_id": "registered",
       "max_shifts": [
         {
-          "shift_id": "RM",
+          "shift_id": "morning",
           "max_shifts": 12
         },
         {
-          "shift_id": "RA",
+          "shift_id": "evening",
           "max_shifts": 12
         },
         {
-          "shift_id": "RN",
+          "shift_id": "night",
           "max_shifts": 12
         }
       ],
@@ -252,21 +214,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Jaime",
+      "role_id": "registered",
       "max_shifts": [
         {
-          "shift_id": "RM",
+          "shift_id": "morning",
           "max_shifts": 16
         },
         {
-          "shift_id": "RA",
+          "shift_id": "evening",
           "max_shifts": 16
         },
         {
-          "shift_id": "RN",
+          "shift_id": "night",
           "max_shifts": 16
         }
       ],
@@ -278,21 +241,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Jacob",
+      "role_id": "registered",
       "max_shifts": [
         {
-          "shift_id": "RM",
+          "shift_id": "morning",
           "max_shifts": 16
         },
         {
-          "shift_id": "RA",
+          "shift_id": "evening",
           "max_shifts": 16
         },
         {
-          "shift_id": "RN",
+          "shift_id": "night",
           "max_shifts": 16
         }
       ],
@@ -304,21 +268,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Chloe",
+      "role_id": "registered",
       "max_shifts": [
         {
-          "shift_id": "RM",
+          "shift_id": "morning",
           "max_shifts": 12
         },
         {
-          "shift_id": "RA",
+          "shift_id": "evening",
           "max_shifts": 12
         },
         {
-          "shift_id": "RN",
+          "shift_id": "night",
           "max_shifts": 12
         }
       ],
@@ -330,21 +295,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Diane",
+      "role_id": "registered",
       "max_shifts": [
         {
-          "shift_id": "RM",
+          "shift_id": "morning",
           "max_shifts": 16
         },
         {
-          "shift_id": "RA",
+          "shift_id": "evening",
           "max_shifts": 16
         },
         {
-          "shift_id": "RN",
+          "shift_id": "night",
           "max_shifts": 16
         }
       ],
@@ -356,21 +322,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Nancy",
+      "role_id": "assistant",
       "max_shifts": [
         {
-          "shift_id": "AM",
+          "shift_id": "morning",
           "max_shifts": 20
         },
         {
-          "shift_id": "AA",
+          "shift_id": "evening",
           "max_shifts": 20
         },
         {
-          "shift_id": "AN",
+          "shift_id": "night",
           "max_shifts": 20
         }
       ],
@@ -382,21 +349,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Sandra",
+      "role_id": "assistant",
       "max_shifts": [
         {
-          "shift_id": "AM",
+          "shift_id": "morning",
           "max_shifts": 20
         },
         {
-          "shift_id": "AA",
+          "shift_id": "evening",
           "max_shifts": 20
         },
         {
-          "shift_id": "AN",
+          "shift_id": "night",
           "max_shifts": 20
         }
       ],
@@ -408,21 +376,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Rachael",
+      "role_id": "assistant",
       "max_shifts": [
         {
-          "shift_id": "AM",
+          "shift_id": "morning",
           "max_shifts": 20
         },
         {
-          "shift_id": "AA",
+          "shift_id": "evening",
           "max_shifts": 20
         },
         {
-          "shift_id": "AN",
+          "shift_id": "night",
           "max_shifts": 20
         }
       ],
@@ -434,21 +403,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Peter",
+      "role_id": "assistant",
       "max_shifts": [
         {
-          "shift_id": "AM",
+          "shift_id": "morning",
           "max_shifts": 20
         },
         {
-          "shift_id": "AA",
+          "shift_id": "evening",
           "max_shifts": 20
         },
         {
-          "shift_id": "AN",
+          "shift_id": "night",
           "max_shifts": 20
         }
       ],
@@ -460,21 +430,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Janet",
+      "role_id": "assistant",
       "max_shifts": [
         {
-          "shift_id": "AM",
+          "shift_id": "morning",
           "max_shifts": 16
         },
         {
-          "shift_id": "AA",
+          "shift_id": "evening",
           "max_shifts": 16
         },
         {
-          "shift_id": "AN",
+          "shift_id": "night",
           "max_shifts": 16
         }
       ],
@@ -486,21 +457,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Joshua",
+      "role_id": "assistant",
       "max_shifts": [
         {
-          "shift_id": "AM",
+          "shift_id": "morning",
           "max_shifts": 12
         },
         {
-          "shift_id": "AA",
+          "shift_id": "evening",
           "max_shifts": 12
         },
         {
-          "shift_id": "AN",
+          "shift_id": "night",
           "max_shifts": 12
         }
       ],
@@ -512,21 +484,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Melissa",
+      "role_id": "assistant",
       "max_shifts": [
         {
-          "shift_id": "AM",
+          "shift_id": "morning",
           "max_shifts": 12
         },
         {
-          "shift_id": "AA",
+          "shift_id": "evening",
           "max_shifts": 12
         },
         {
-          "shift_id": "AN",
+          "shift_id": "night",
           "max_shifts": 12
         }
       ],
@@ -538,21 +511,22 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     },
     {
       "employee_id": "Patty",
+      "role_id": "assistant",
       "max_shifts": [
         {
-          "shift_id": "AM",
+          "shift_id": "morning",
           "max_shifts": 16
         },
         {
-          "shift_id": "AA",
+          "shift_id": "evening",
           "max_shifts": 16
         },
         {
-          "shift_id": "AN",
+          "shift_id": "night",
           "max_shifts": 16
         }
       ],
@@ -564,7 +538,7 @@
       "min_consecutive_shifts": 1,
       "min_consecutive_days_off": 1,
       "max_weekends": 4,
-      "stress_level": 10
+      "workload_level": 10
     }
   ],
   "days_off": [
@@ -693,505 +667,505 @@
     {
       "employee_id": "Kelly",
       "day": 0,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 1,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 2,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 3,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 4,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 5,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 6,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 7,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 8,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 9,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 10,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 11,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 12,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 13,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 14,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 15,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 16,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 17,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 18,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 19,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 20,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 21,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 22,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 23,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 24,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 25,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 26,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Kelly",
       "day": 27,
-      "shift_id": "RA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 0,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 1,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 2,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 3,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 4,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 5,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 6,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 7,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 8,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 9,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 10,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 11,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 12,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 13,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 14,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 15,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 16,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 17,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 18,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 19,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 20,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 21,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 22,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 23,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 24,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 25,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 26,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Chloe",
       "day": 27,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 0,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 1,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 2,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 3,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 4,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 5,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 6,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 7,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 8,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 9,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 10,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 11,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 12,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 13,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 14,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 15,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 16,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 17,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 18,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 19,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 20,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 21,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 22,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 23,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 24,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 25,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 26,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     },
     {
       "employee_id": "Rachael",
       "day": 27,
-      "shift_id": "AA",
+      "shift_id": "evening",
       "weight": 1
     }
   ],
@@ -1199,1799 +1173,960 @@
     {
       "employee_id": "Rachael",
       "day": 2,
-      "shift_id": "AN",
+      "shift_id": "night",
       "weight": 1
     },
     {
       "employee_id": "Joshua",
       "day": 25,
-      "shift_id": "AM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Melissa",
       "day": 6,
-      "shift_id": "AM",
+      "shift_id": "morning",
       "weight": 1
     },
     {
       "employee_id": "Nancy",
       "day": 7,
-      "shift_id": "AN",
+      "shift_id": "night",
       "weight": 1
     },
     {
       "employee_id": "Jaime",
       "day": 12,
-      "shift_id": "RM",
+      "shift_id": "morning",
       "weight": 1
     }
   ],
   "cover": [
     {
       "day": 0,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 0,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 0,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 0,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 0,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 0,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 0,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 0,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 0,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 0,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 1,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 1,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 1,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 1,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 1,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 1,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 1,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 1,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 1,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 2,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 2,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 2,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 2,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 2,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 2,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 2,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 2,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 2,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 3,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 3,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 3,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 3,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 3,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 3,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 3,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 3,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 3,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 4,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 4,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 4,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 4,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 4,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 4,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 4,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 4,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 4,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 5,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 5,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 5,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 5,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 5,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 5,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 5,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 5,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 5,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 0,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 6,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 6,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 6,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 6,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 6,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 6,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 6,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 6,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 6,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 7,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 7,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 7,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 7,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 7,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 7,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 7,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 7,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 7,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 8,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 8,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 8,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 8,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 8,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 8,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 8,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 8,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 8,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 0,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 9,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 9,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 9,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 9,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 9,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 9,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 9,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 9,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 9,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 10,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 10,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 10,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 10,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 10,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 10,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 10,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 10,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 10,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 11,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 11,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 11,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 11,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 11,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 11,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 11,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 11,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 11,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 12,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 12,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 12,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 12,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 12,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 12,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 12,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 12,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 12,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 13,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 13,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 0,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 13,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 13,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 13,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 13,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 13,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 13,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 13,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 14,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 0,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 14,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 14,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 14,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 14,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 14,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 14,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 14,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 14,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 15,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 15,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 15,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 15,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 15,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 15,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 15,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 15,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 15,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 16,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 16,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 16,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 16,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 16,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 16,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 16,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 16,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 16,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 17,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 17,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 17,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 17,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 17,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 17,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 17,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 17,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 17,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 18,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 18,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 18,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 18,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 18,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 18,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 18,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 18,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 18,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 19,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 19,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 0,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 19,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 19,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 19,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 19,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 19,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 19,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 19,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 20,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 20,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 20,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 20,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 20,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 20,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 20,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 20,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 20,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 21,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 21,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 21,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 21,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 21,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 21,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 21,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 21,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 21,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 22,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 22,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 22,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 22,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 22,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 22,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 22,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 22,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 22,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 0,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 23,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 23,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 23,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 23,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 23,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 23,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 23,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 23,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 23,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 24,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 24,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 24,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 24,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 24,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 24,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 24,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 24,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 24,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 25,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 25,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 25,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 25,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 25,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 25,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 25,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 25,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 25,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 0,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 26,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 26,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 26,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 26,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 26,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 26,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 26,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 26,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 26,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 27,
-      "shift_id": "LM",
-      "requirement": 1,
+      "shift_id": "morning",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 27,
-      "shift_id": "LA",
-      "requirement": 1,
+      "shift_id": "evening",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 2
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     },
     {
       "day": 27,
-      "shift_id": "LN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 27,
-      "shift_id": "RM",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 27,
-      "shift_id": "RA",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 27,
-      "shift_id": "RN",
-      "requirement": 1,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 27,
-      "shift_id": "AM",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 27,
-      "shift_id": "AA",
-      "requirement": 2,
-      "weight_for_under": 100,
-      "weight_for_over": 1
-    },
-    {
-      "day": 27,
-      "shift_id": "AN",
-      "requirement": 1,
+      "shift_id": "night",
+      "role_requirements": {
+        "lead": 1,
+        "registered": 1,
+        "assistant": 1
+      },
       "weight_for_under": 100,
       "weight_for_over": 1
     }
   ],
-  "stress_threshold": 67
+  "blocked_weekdays": [],
+  "workload_threshold": 67
 }

@@ -5,10 +5,17 @@ import pandas as pd
 @dataclass
 class SchedulingProblem:
     horizon: int = 0
-    shifts: pd.DataFrame = None
-    staff: pd.DataFrame = None
-    days_off: pd.DataFrame = None
-    shift_on: pd.DataFrame = None
-    shift_off: pd.DataFrame = None
-    cover: pd.DataFrame = None
-    stress_threshold: int = 0
+    start_date: str = "1970-01-05"
+
+    shifts: pd.DataFrame = None  # type: ignore
+    staff: pd.DataFrame = None  # type: ignore
+    days_off: pd.DataFrame = None  # type: ignore
+    shift_on: pd.DataFrame = None  # type: ignore
+    shift_off: pd.DataFrame = None  # type: ignore
+    cover: pd.DataFrame = None  # type: ignore
+    blocked_weekdays: pd.DataFrame = None  # type: ignore
+
+    workload_threshold: int = 0
+
+    underallocation_weight_total: int = 1
+    underallocation_weight_weekly: int = 1
