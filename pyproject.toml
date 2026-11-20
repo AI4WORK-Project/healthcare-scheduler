@@ -5,6 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "healthcare"
 version = "0.1.0"
+description = "Human-Aware Task Planner – Nurse Rostering"
 dependencies = [
     "cpmpy==0.9.26",
     "ortools==9.14.6206",
