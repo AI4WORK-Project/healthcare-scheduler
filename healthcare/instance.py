@@ -303,7 +303,9 @@ class Instance:
                 assert role_id in roles, (
                     f"Cover role '{role_id}' does not exist in staff roles"
                 )
-                assert requirement >= 0
+                assert requirement >= 0, (
+                    "Cover role requirements must be greater than or equal to 0"
+                )
 
         if any(
             cover.weight_for_under is not None
@@ -317,7 +319,9 @@ class Instance:
             )
 
         for blocked in self.blocked_weekdays:
-            assert 0 <= blocked.weekday <= 6
+            assert 0 <= blocked.weekday <= 6, (
+                "Blocked weekdays must be between 0 (Monday) and 6 (Sunday)"
+            )
 
             for shift_id in blocked.shift_ids:
                 assert shift_id in shifts, (

@@ -25,8 +25,25 @@ def test_health():
 
 def test_invalid_instance():
     response = requests.post(URL, json="")
-    assert response.status_code in [400, 500]
-    assert len(response.json()["message"]) > 0
+    assert response.status_code == 422
+    assert response.json()["message"] == "Validation error"
+    assert len(response.json()["detail"]) > 0
+
+
+def test_missing_field():
+    instance = load_instance_json("instance0.json")
+    del instance["horizon"]
+    response = requests.post(URL, json=instance)
+    assert response.status_code == 422
+    assert response.json()["detail"] == "Missing field 'horizon'"
+
+
+def test_invalid_field_value():
+    instance = load_instance_json("instance0.json")
+    instance["horizon"] = 0
+    response = requests.post(URL, json=instance)
+    assert response.status_code == 422
+    assert response.json()["detail"] == "The horizon must be greater than 0"
 
 
 def test_instance_not_solvable():
