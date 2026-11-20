@@ -28,7 +28,7 @@ docker build -t healthcare-scheduler .
 docker run -p 5000:5000 healthcare-scheduler
 ```
 
-Or install the package and run the server directly (Python 3.12):
+Or install the package and run the server directly (Python 3.10 or later; the image and CI use 3.12):
 
 ```sh
 pip install .
@@ -102,6 +102,8 @@ The [examples](examples) folder also contains:
 - [client_example.py](examples/client_example.py): sends a request to the server and prints the response;
 - [client_example_with_visualization.py](examples/client_example_with_visualization.py): sends a request and opens the visualization of the roster;
 - [example.py](examples/example.py): solves an instance using the `healthcare` package directly, without the server.
+
+The client examples need `requests`: `pip install .[example]`.
 
 ## Development
 

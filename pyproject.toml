@@ -7,6 +7,7 @@ name = "healthcare"
 version = "0.1.0"
 description = "Human-Aware Task Planner – Nurse Rostering"
 license = "EPL-2.0"
+requires-python = ">=3.10"
 dependencies = [
     "cpmpy==0.9.26",
     "ortools==9.14.6206",
@@ -27,3 +28,8 @@ test = [
     "pytest",
     "requests"
 ]
+example = ["requests"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["healthcare*"]
