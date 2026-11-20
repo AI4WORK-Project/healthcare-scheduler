@@ -116,6 +116,12 @@ python -m pytest tests/test_api.py
 
 The CI runs the tests on every pull request. Every push to `main` publishes the Docker image `ghcr.io/ai4work-project/healthcare-scheduler:latest`, and every tag `vX.Y.Z` publishes `ghcr.io/ai4work-project/healthcare-scheduler:X.Y.Z`.
 
+## License
+
+Copyright (c) 2025-2026 Fondazione Bruno Kessler and other contributors.
+
+This software is distributed under the [Eclipse Public License 2.0](LICENSE) (`EPL-2.0`). See [NOTICE](NOTICE).
+
 ## Acknowledgements
 
 This software has been developed within the AI4Work project, which has received funding from the European Union's Horizon Europe research and innovation programme under grant agreement No 101135990.
