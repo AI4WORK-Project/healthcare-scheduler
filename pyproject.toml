@@ -13,7 +13,9 @@ dependencies = [
     "dataclasses-json==0.6.7",
     "flask==3.1.2",
     "waitress==3.0.2",
-    "flask-cors==6.0.2"
+    "flask-cors==6.0.2",
+    # cpmpy 0.9.26 imports pkg_resources, removed in setuptools 81
+    "setuptools<81"
 ]
 
 [project.optional-dependencies]
