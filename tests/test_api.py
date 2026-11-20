@@ -7,6 +7,7 @@ from typing import Dict
 
 URL = "http://0.0.0.0:5000/schedule"
 HEALTH_URL = "http://0.0.0.0:5000/health"
+GANTT_URL = "http://0.0.0.0:5000/last_schedule_gantt"
 INSTANCES_PATH = os.path.join(pathlib.Path(__file__).parent.resolve(), "instances")
 
 
@@ -62,3 +63,9 @@ def test_valid_instance():
     body = response.json()
     assert "shift_schedule" in body
     assert "underallocations" in body
+
+    response = requests.get(GANTT_URL)
+    assert response.status_code == 200
+    assert response.headers["Content-Type"].startswith("text/html")
+    for employee in body["shift_schedule"]:
+        assert employee["employee_id"] in response.text

@@ -1,5 +1,6 @@
 import json
 import logging
+import threading
 from importlib.metadata import PackageNotFoundError, version
 
 from apiflask import APIFlask, Schema
@@ -10,6 +11,7 @@ from flask_cors import CORS
 from marshmallow_dataclass import class_schema
 
 from healthcare import Instance, Solution, NurseSchedulingFactory
+from healthcare.visualize import visualize
 
 logging.basicConfig(level=logging.INFO)
 
@@ -59,6 +61,30 @@ ERROR_RESPONSES = {
     422: 'Invalid input: {"message": "Validation error", "detail": "..."}',
     500: 'Internal server error: {"message": "..."}',
 }
+
+
+class LastScheduleGantt:
+    """HTML visualization of the last computed schedule, kept in memory."""
+
+    def __init__(self):
+        self._lock = threading.Lock()
+        self._html = None
+
+    def update(self, problem, solution):
+        try:
+            html = visualize(problem, solution).to_html(doctype_html=True)
+        except Exception:
+            logging.warning("Could not visualize the schedule", exc_info=True)
+            html = None
+        with self._lock:
+            self._html = html
+
+    def get(self):
+        with self._lock:
+            return self._html
+
+
+last_schedule_gantt_html = LastScheduleGantt()
 
 
 def json_response(body: dict, status: int) -> Response:
@@ -120,7 +146,26 @@ def schedule(query_data, json_data):
         logging.exception("Error while computing the schedule")
         return json_response({"message": str(e)}, 500)
 
+    last_schedule_gantt_html.update(problem, solution)
     return Response(solution.to_json(), mimetype="application/json", status=200)
+
+
+@app.get("/last_schedule_gantt")
+@app.doc(
+    summary="Visualize the last computed schedule",
+    description="HTML table of the shifts assigned to each nurse on each day "
+    "in the last schedule computed by /schedule.",
+    responses={
+        200: {"description": "HTML visualization", "content": {"text/html": {}}},
+        404: "No schedule has been computed yet",
+    },
+)
+def last_schedule_gantt():
+    logging.info("Received request for the last generated schedule plot html.")
+    html = last_schedule_gantt_html.get()
+    if html is None:
+        return json_response({"message": "Gantt html not found"}, 404)
+    return Response(html, mimetype="text/html")
 
 
 if __name__ == "__main__":
