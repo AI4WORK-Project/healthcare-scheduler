@@ -27,14 +27,26 @@ def health_check():
     return json_response({"status": "healthy"}, 200)
 
 
+def validation_error_response(error: Exception) -> Response:
+    if isinstance(error, KeyError):
+        detail = f"Missing field {error}"
+    else:
+        detail = str(error) or type(error).__name__
+    logging.error(f"Validation: {detail}")
+    return json_response({"message": "Validation error", "detail": detail}, 422)
+
+
 @app.route("/schedule", methods=["POST"])
 def schedule():
-    try:
-        logging.info("Request received!")
+    logging.info("Request received!")
 
+    try:
         instance: Instance = Instance.from_dict(request.json)
         problem = instance.scheduling_problem()
+    except Exception as e:
+        return validation_error_response(e)
 
+    try:
         factory = NurseSchedulingFactory(problem)
         model, nurse_view = factory.get_optimization_model()
 
