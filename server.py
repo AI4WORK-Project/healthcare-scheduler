@@ -1,10 +1,16 @@
 import json
 import logging
+from importlib.metadata import PackageNotFoundError, version
 from flask import Flask, request, Response
 from healthcare import Instance, Solution, NurseSchedulingFactory
 from flask_cors import CORS
 
 logging.basicConfig(level=logging.INFO)
+
+try:
+    __version__ = version("healthcare")
+except PackageNotFoundError:
+    __version__ = "unknown"
 
 app = Flask("NurseRostering-API")
 CORS(app)
@@ -23,8 +29,8 @@ def health_check():
     """
     Check if the service is alive and reachable.
     """
-    logging.info("Health check pinged.")
-    return json_response({"status": "healthy"}, 200)
+    logging.debug("Health check pinged.")
+    return json_response({"status": "healthy", "version": __version__}, 200)
 
 
 def validation_error_response(error: Exception) -> Response:

@@ -21,6 +21,7 @@ def test_health():
     response = requests.get(HEALTH_URL)
     assert response.status_code == 200
     assert response.json()["status"] == "healthy"
+    assert len(response.json()["version"]) > 0
 
 
 def test_invalid_instance():
