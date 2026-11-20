@@ -168,7 +168,12 @@ def last_schedule_gantt():
     return Response(html, mimetype="text/html")
 
 
-if __name__ == "__main__":
+def start():
+    logging.info("Starting...")
     from waitress import serve
 
     serve(app, host="0.0.0.0", port=5000)
+
+
+if __name__ == "__main__":
+    start()

@@ -107,12 +107,10 @@ The [examples](examples) folder also contains:
 
 ```sh
 pip install .[test]
-python -m pytest tests/test_solver.py
-
-# the API tests need a running server
-python server.py &
-python -m pytest tests/test_api.py
+python -m pytest tests
 ```
+
+The API tests start the server on port 5000 themselves, so the port must be free.
 
 The CI runs the tests on every pull request. Every push to `main` publishes the Docker image `ghcr.io/ai4work-project/healthcare-scheduler:latest`, and every tag `vX.Y.Z` publishes `ghcr.io/ai4work-project/healthcare-scheduler:X.Y.Z`.
 
