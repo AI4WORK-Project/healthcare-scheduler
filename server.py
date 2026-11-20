@@ -1,3 +1,4 @@
+import json
 import logging
 from flask import Flask, request, Response
 from healthcare import Instance, Solution, NurseSchedulingFactory
@@ -9,13 +10,21 @@ app = Flask("NurseRostering-API")
 CORS(app)
 
 
+def json_response(body: dict, status: int) -> Response:
+    return Response(
+        json.dumps(body, separators=(",", ":")),
+        mimetype="application/json",
+        status=status,
+    )
+
+
 @app.route("/health", methods=["GET"])
 def health_check():
     """
     Check if the service is alive and reachable.
     """
     logging.info("Health check pinged.")
-    return Response('{"status":"healthy"}', mimetype="application/json", status=200)
+    return json_response({"status": "healthy"}, 200)
 
 
 @app.route("/schedule", methods=["POST"])
@@ -37,16 +46,13 @@ def schedule():
             solution = Solution.from_nurse_view(nurse_view.value(), factory)
         else:
             logging.info("No solution has been found for the given problem")
-            return Response(
-                '{"message":"No solution has been found for the given problem"}',
-                mimetype="application/json",
-                status=400,
+            return json_response(
+                {"message": "No solution has been found for the given problem"}, 400
             )
 
     except Exception as e:
-        return Response(
-            '{"message":"%s"}' % str(e), mimetype="application/json", status=500
-        )
+        logging.exception("Error while computing the schedule")
+        return json_response({"message": str(e)}, 500)
 
     return Response(solution.to_json(), mimetype="application/json", status=200)
 
