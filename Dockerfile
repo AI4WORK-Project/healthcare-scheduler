@@ -2,7 +2,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY pyproject.toml /app/
+COPY pyproject.toml LICENSE NOTICE /app/
 COPY healthcare/ /app/healthcare/
 COPY server.py /app/
 
