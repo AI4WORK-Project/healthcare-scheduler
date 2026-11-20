@@ -1,9 +1,15 @@
 import json
 import logging
 from importlib.metadata import PackageNotFoundError, version
-from flask import Flask, request, Response
-from healthcare import Instance, Solution, NurseSchedulingFactory
+
+from apiflask import APIFlask, Schema
+from apiflask.fields import Integer, String
+from marshmallow import EXCLUDE
+from flask import request, Response
 from flask_cors import CORS
+from marshmallow_dataclass import class_schema
+
+from healthcare import Instance, Solution, NurseSchedulingFactory
 
 logging.basicConfig(level=logging.INFO)
 
@@ -12,8 +18,47 @@ try:
 except PackageNotFoundError:
     __version__ = "unknown"
 
-app = Flask("NurseRostering-API")
+app = APIFlask(
+    "NurseRostering-API",
+    title="Human-Aware Task Planner – Nurse Rostering",
+    version=__version__,
+)
+app.openapi_version = "3.0.2"
 CORS(app)
+
+
+class DocSchema(Schema):
+    """The schemas only document the API: the input is parsed and validated by
+    the dataclasses, so validation is disabled and unknown fields are ignored."""
+
+    class Meta:
+        unknown = EXCLUDE
+
+
+InstanceSchema = class_schema(Instance, base_schema=DocSchema)
+SolutionSchema = class_schema(Solution, base_schema=DocSchema)
+
+
+class ScheduleQuerySchema(Schema):
+    time_limit = Integer(
+        required=False,
+        metadata={
+            "description": "Time limit in seconds for the solver. "
+            "If not provided, the solver runs without a time limit."
+        },
+    )
+
+
+class HealthSchema(Schema):
+    status = String(metadata={"example": "healthy"})
+    version = String(metadata={"example": __version__})
+
+
+ERROR_RESPONSES = {
+    400: "No solution has been found for the given problem",
+    422: 'Invalid input: {"message": "Validation error", "detail": "..."}',
+    500: 'Internal server error: {"message": "..."}',
+}
 
 
 def json_response(body: dict, status: int) -> Response:
@@ -24,11 +69,10 @@ def json_response(body: dict, status: int) -> Response:
     )
 
 
-@app.route("/health", methods=["GET"])
+@app.get("/health")
+@app.output(HealthSchema)
+@app.doc(summary="Check if the service is alive and reachable")
 def health_check():
-    """
-    Check if the service is alive and reachable.
-    """
     logging.debug("Health check pinged.")
     return json_response({"status": "healthy", "version": __version__}, 200)
 
@@ -42,8 +86,12 @@ def validation_error_response(error: Exception) -> Response:
     return json_response({"message": "Validation error", "detail": detail}, 422)
 
 
-@app.route("/schedule", methods=["POST"])
-def schedule():
+@app.post("/schedule")
+@app.input(ScheduleQuerySchema, location="query", validation=False)
+@app.input(InstanceSchema, location="json", validation=False)
+@app.output(SolutionSchema)
+@app.doc(summary="Compute a nurse roster", responses=ERROR_RESPONSES)
+def schedule(query_data, json_data):
     logging.info("Request received!")
 
     try:
