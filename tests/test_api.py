@@ -123,3 +123,20 @@ def test_valid_instance():
     assert response.headers["Content-Type"].startswith("text/html")
     for employee in body["shift_schedule"]:
         assert employee["employee_id"] in response.text
+
+
+def test_gantt_render_error(monkeypatch):
+    def render(problem, solution):
+        raise RuntimeError("cannot render")
+
+    gantt = server.LastScheduleGantt(render)
+    monkeypatch.setattr(server, "last_schedule_gantt_html", gantt)
+    client = server.app.test_client()
+
+    response = client.get("/last_schedule_gantt")
+    assert response.status_code == 404
+
+    gantt.update(None, None)
+    response = client.get("/last_schedule_gantt")
+    assert response.status_code == 500
+    assert response.json["message"] == "The last schedule could not be visualized"

@@ -67,27 +67,35 @@ ERROR_RESPONSES = {
 
 
 class LastScheduleGantt:
-    """HTML visualization of the last computed schedule, kept in memory."""
+    """Last computed schedule, kept in memory and rendered as an HTML page
+    only when it is requested."""
 
-    def __init__(self):
+    def __init__(self, render):
+        self._render = render
         self._lock = threading.Lock()
+        self._schedule = None
         self._html = None
 
-    def update(self, problem, solution):
-        try:
-            html = visualize(problem, solution).to_html(doctype_html=True)
-        except Exception:
-            logging.warning("Could not visualize the schedule", exc_info=True)
-            html = None
+    def update(self, *schedule):
         with self._lock:
-            self._html = html
+            self._schedule = schedule
+            self._html = None
 
-    def get(self):
+    def html(self):
+        """Return the HTML page, None if no schedule has been computed yet.
+
+        Raise the rendering error if the page cannot be rendered."""
         with self._lock:
+            if self._html is None and self._schedule is not None:
+                self._html = self._render(*self._schedule)
             return self._html
 
 
-last_schedule_gantt_html = LastScheduleGantt()
+def render_roster(problem, solution) -> str:
+    return visualize(problem, solution).to_html(doctype_html=True)
+
+
+last_schedule_gantt_html = LastScheduleGantt(render_roster)
 
 
 def json_response(body: dict, status: int) -> Response:
@@ -186,11 +194,18 @@ def schedule(query_data, json_data):
     responses={
         200: {"description": "HTML visualization", "content": {"text/html": {}}},
         404: "No schedule has been computed yet",
+        500: "The last schedule could not be visualized",
     },
 )
 def last_schedule_gantt():
     logging.info("Received request for the last generated schedule plot html.")
-    html = last_schedule_gantt_html.get()
+    try:
+        html = last_schedule_gantt_html.html()
+    except Exception:
+        logging.exception("Could not visualize the last schedule")
+        return json_response(
+            {"message": "The last schedule could not be visualized"}, 500
+        )
     if html is None:
         return json_response({"message": "Gantt html not found"}, 404)
     return Response(html, mimetype="text/html")

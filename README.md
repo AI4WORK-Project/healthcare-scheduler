@@ -79,6 +79,9 @@ Returns an HTML table with the shifts assigned to each nurse on each day in the 
 
 - **200**: the HTML page, to be viewed in a browser.
 - **404**: no roster has been computed yet: `{"message": "Gantt html not found"}`.
+- **500**: the last roster could not be visualized: `{"message": "The last schedule could not be visualized"}`.
+
+The page is rendered when it is first requested, so computing a roster does not wait for its visualization.
 
 ### GET `/health`
 
