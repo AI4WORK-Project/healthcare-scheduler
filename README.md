@@ -64,7 +64,7 @@ See:
 - [instance1.json](examples/instances/instance1.json) and [instance1_annotated.json](examples/instances/instance1_annotated.json): example request;
 - [schema.json](examples/instances/schema.json): JSON schema of the request.
 
-Unknown fields are ignored.
+Unknown fields are ignored, and the server logs a warning that lists them.
 
 #### Responses
 

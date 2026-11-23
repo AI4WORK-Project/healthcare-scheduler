@@ -6,7 +6,7 @@ from importlib.metadata import PackageNotFoundError, version
 from apiflask import APIFlask, HTTPError, Schema
 from apiflask.fields import Integer, String
 from apiflask.validators import Range
-from marshmallow import EXCLUDE
+from marshmallow import EXCLUDE, RAISE
 from flask import request, Response
 from flask_cors import CORS
 from marshmallow_dataclass import class_schema
@@ -41,6 +41,30 @@ class DocSchema(Schema):
 
 InstanceSchema = class_schema(Instance, base_schema=DocSchema)
 SolutionSchema = class_schema(Solution, base_schema=DocSchema)
+
+
+class UnknownFieldsSchema(Schema):
+    """Base of the schema used only to find the unknown fields of a request."""
+
+    class Meta:
+        unknown = RAISE
+
+
+InstanceUnknownFieldsSchema = class_schema(Instance, base_schema=UnknownFieldsSchema)
+
+
+def unknown_fields(data) -> list[str]:
+    """Return the paths of the fields of the request that are not part of an
+    instance, such as staff.0.blocked_weekday: they are ignored."""
+
+    def paths(errors: dict, prefix: str):
+        for key, value in errors.items():
+            if value == ["Unknown field."]:
+                yield f"{prefix}{key}"
+            elif isinstance(value, dict):
+                yield from paths(value, f"{prefix}{key}.")
+
+    return sorted(paths(InstanceUnknownFieldsSchema().validate(data), ""))
 
 
 class ScheduleQuerySchema(Schema):
@@ -162,6 +186,9 @@ def schedule(query_data, json_data):
         instance: Instance = Instance.from_dict(request.json)
     except Exception as e:
         return validation_error_response(e)
+
+    if ignored := unknown_fields(request.json):
+        logging.warning(f"Ignoring unknown fields: {', '.join(ignored)}")
 
     try:
         problem = instance.scheduling_problem()

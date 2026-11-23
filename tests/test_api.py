@@ -129,6 +129,16 @@ def test_unknown_identifier(monkeypatch):
     assert response.json["detail"] == "Unknown identifier 'night'"
 
 
+def test_unknown_fields():
+    instance = load_instance_json("instance0.json")
+    assert server.unknown_fields(instance) == []
+
+    instance["blocked_weekday"] = []
+    instance["staff"][1]["max_shift"] = []
+    instance["cover"][0]["role_requirements"]["nurse"] = 1
+    assert server.unknown_fields(instance) == ["blocked_weekday", "staff.1.max_shift"]
+
+
 def test_instance_not_solvable():
     instance = load_instance_json("instance_not_solvable.json")
     response = requests.post(URL, json=instance)
