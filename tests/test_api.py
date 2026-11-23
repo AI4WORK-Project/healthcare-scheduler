@@ -77,6 +77,15 @@ def test_malformed_json():
     assert response.json()["detail"].startswith("Invalid JSON")
 
 
+@pytest.mark.parametrize("time_limit", ["60s", "10.5", "0", "-3"])
+def test_invalid_time_limit(time_limit: str):
+    instance = load_instance_json("instance0.json")
+    response = requests.post(URL, params={"time_limit": time_limit}, json=instance)
+    assert response.status_code == 422
+    assert response.json()["message"] == "Validation error"
+    assert "time_limit" in response.json()["detail"]
+
+
 def test_missing_field():
     instance = load_instance_json("instance0.json")
     del instance["horizon"]

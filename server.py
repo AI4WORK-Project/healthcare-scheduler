@@ -5,6 +5,7 @@ from importlib.metadata import PackageNotFoundError, version
 
 from apiflask import APIFlask, HTTPError, Schema
 from apiflask.fields import Integer, String
+from apiflask.validators import Range
 from marshmallow import EXCLUDE
 from flask import request, Response
 from flask_cors import CORS
@@ -45,6 +46,7 @@ SolutionSchema = class_schema(Solution, base_schema=DocSchema)
 class ScheduleQuerySchema(Schema):
     time_limit = Integer(
         required=False,
+        validate=Range(min=1),
         metadata={
             "description": "Time limit in seconds for the solver. "
             "If not provided, the solver runs without a time limit."
@@ -123,6 +125,22 @@ def bad_request(error: BadRequest) -> Response:
     return app.error_callback(HTTPError(400, message=error.name))
 
 
+def time_limit_arg() -> int | None:
+    """Return the time_limit query parameter, None if it is not given.
+
+    Raise ValueError if it is not a positive integer."""
+    value = request.args.get("time_limit")
+    if value is None:
+        return None
+    try:
+        time_limit = int(value)
+    except ValueError:
+        time_limit = 0
+    if time_limit <= 0:
+        raise ValueError(f"time_limit must be a positive integer, got '{value}'")
+    return time_limit
+
+
 @app.post("/schedule")
 @app.input(ScheduleQuerySchema, location="query", validation=False)
 @app.input(InstanceSchema, location="json", validation=False)
@@ -132,17 +150,16 @@ def schedule(query_data, json_data):
     logging.info("Request received!")
 
     try:
+        time_limit = time_limit_arg()
         instance: Instance = Instance.from_dict(request.json)
         problem = instance.scheduling_problem()
     except Exception as e:
         return validation_error_response(e)
+    logging.info(f"Time limit: {time_limit}")
 
     try:
         factory = NurseSchedulingFactory(problem)
         model, nurse_view = factory.get_optimization_model()
-
-        time_limit = request.args.get("time_limit", None, type=int)
-        logging.info(f"Time limit: {time_limit}")
 
         if model.solve(solver="ortools", time_limit=time_limit):
             logging.info(f"Solution penalty: {model.objective_value()}")

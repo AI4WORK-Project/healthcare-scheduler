@@ -53,7 +53,7 @@ Computes a roster for the problem described by the JSON request body.
 
 #### Query parameters
 
-- `time_limit` (optional, int): time limit in seconds for the solver. If not provided, the solver runs without a time limit.
+- `time_limit` (optional, positive int): time limit in seconds for the solver. If not provided, the solver runs without a time limit; any other value returns 422.
 
 #### Request body
 
