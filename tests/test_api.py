@@ -68,6 +68,15 @@ def test_invalid_instance():
     assert len(response.json()["detail"]) > 0
 
 
+def test_malformed_json():
+    response = requests.post(
+        URL, data='{"horizon": 7,', headers={"Content-Type": "application/json"}
+    )
+    assert response.status_code == 422
+    assert response.json()["message"] == "Validation error"
+    assert response.json()["detail"].startswith("Invalid JSON")
+
+
 def test_missing_field():
     instance = load_instance_json("instance0.json")
     del instance["horizon"]

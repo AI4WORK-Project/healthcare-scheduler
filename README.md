@@ -70,7 +70,7 @@ Unknown fields are ignored.
 
 - **200**: the roster (`shift_schedule`: the shift of each nurse on each day, `-` for a day off) and the underallocations of the minimum working minutes (`underallocations`). See [instance1_solution.json](examples/instances/instance1_solution.json).
 - **400**: no solution has been found: `{"message": "No solution has been found for the given problem"}`.
-- **422**: the input is not valid: `{"message": "Validation error", "detail": "<reason>"}`.
+- **422**: the input is not valid, including a body that is not valid JSON: `{"message": "Validation error", "detail": "<reason>"}`.
 - **500**: internal server error: `{"message": "<reason>"}`.
 
 ### GET `/last_schedule_gantt`
