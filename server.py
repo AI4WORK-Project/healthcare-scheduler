@@ -160,8 +160,16 @@ def schedule(query_data, json_data):
     try:
         time_limit = time_limit_arg()
         instance: Instance = Instance.from_dict(request.json)
+    except Exception as e:
+        return validation_error_response(e)
+
+    try:
         problem = instance.scheduling_problem()
     except Exception as e:
+        # the fields are all there: a KeyError is an identifier that does not
+        # exist, not a missing field
+        if isinstance(e, KeyError):
+            e = ValueError(f"Unknown identifier {e}")
         return validation_error_response(e)
     logging.info(f"Time limit: {time_limit}")
 

@@ -102,6 +102,33 @@ def test_invalid_field_value():
     assert response.json()["detail"] == "The horizon must be greater than 0"
 
 
+@pytest.mark.parametrize(
+    "requirements, detail",
+    [
+        ({}, "Cover role requirements must not be empty"),
+        (None, "Cover role requirements must not be empty"),
+    ],
+)
+def test_invalid_nested_field(requirements, detail: str):
+    instance = load_instance_json("instance0.json")
+    instance["cover"][0]["role_requirements"] = requirements
+    response = requests.post(URL, json=instance)
+    assert response.status_code == 422
+    assert response.json()["detail"] == detail
+
+
+def test_unknown_identifier(monkeypatch):
+    def scheduling_problem(self):
+        raise KeyError("night")
+
+    monkeypatch.setattr(server.Instance, "scheduling_problem", scheduling_problem)
+    response = server.app.test_client().post(
+        "/schedule", json=load_instance_json("instance0.json")
+    )
+    assert response.status_code == 422
+    assert response.json["detail"] == "Unknown identifier 'night'"
+
+
 def test_instance_not_solvable():
     instance = load_instance_json("instance_not_solvable.json")
     response = requests.post(URL, json=instance)

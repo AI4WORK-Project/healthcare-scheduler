@@ -154,8 +154,9 @@ class Cover:
 
     def validate(self):
         assert self.shift_id != "", "Shift ID must not be empty"
-        assert self.role_requirements is not None
-        assert len(self.role_requirements) > 0
+        assert self.role_requirements, (
+            "Cover role requirements must not be empty"
+        )
 
         for role_id, requirement in self.role_requirements.items():
             assert role_id != "", "Role ID must not be empty"
@@ -184,8 +185,7 @@ class BlockedWeekday:
             "Weekday must be between 0 and 6"
         )
 
-        assert self.shift_ids is not None
-        assert len(self.shift_ids) > 0, (
+        assert self.shift_ids, (
             "Blocked weekday must contain at least one shift ID"
         )
 
