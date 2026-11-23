@@ -6,12 +6,15 @@ LABEL org.opencontainers.image.source="https://github.com/AI4WORK-Project/health
 
 WORKDIR /app
 
-# Install the healthcare package and dependencies
+# Install the dependencies first, so that changing only the code does not
+# reinstall them
 COPY pyproject.toml /app/
 RUN pip install /app/
 
+# Install the healthcare package
 COPY LICENSE NOTICE /app/
 COPY healthcare/ /app/healthcare/
+RUN pip install --no-deps /app/
 COPY server.py /app/
 
 # Expose the port of the server
