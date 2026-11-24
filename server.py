@@ -6,13 +6,14 @@ from importlib.metadata import PackageNotFoundError, version
 from apiflask import APIFlask, HTTPError, Schema
 from apiflask.fields import Integer, String
 from apiflask.validators import Range
-from marshmallow import EXCLUDE, RAISE
-from flask import request, Response
+from flask import Response, request
 from flask_cors import CORS
+from marshmallow import EXCLUDE
 from marshmallow_dataclass import class_schema
 from werkzeug.exceptions import BadRequest
 
-from healthcare import Instance, Solution, NurseSchedulingFactory
+import service
+from healthcare import Instance, Solution
 from healthcare.visualize import visualize
 
 logging.basicConfig(level=logging.INFO)
@@ -41,30 +42,6 @@ class DocSchema(Schema):
 
 InstanceSchema = class_schema(Instance, base_schema=DocSchema)
 SolutionSchema = class_schema(Solution, base_schema=DocSchema)
-
-
-class UnknownFieldsSchema(Schema):
-    """Base of the schema used only to find the unknown fields of a request."""
-
-    class Meta:
-        unknown = RAISE
-
-
-InstanceUnknownFieldsSchema = class_schema(Instance, base_schema=UnknownFieldsSchema)
-
-
-def unknown_fields(data) -> list[str]:
-    """Return the paths of the fields of the request that are not part of an
-    instance, such as staff.0.blocked_weekday: they are ignored."""
-
-    def paths(errors: dict, prefix: str):
-        for key, value in errors.items():
-            if value == ["Unknown field."]:
-                yield f"{prefix}{key}"
-            elif isinstance(value, dict):
-                yield from paths(value, f"{prefix}{key}.")
-
-    return sorted(paths(InstanceUnknownFieldsSchema().validate(data), ""))
 
 
 class ScheduleQuerySchema(Schema):
@@ -130,6 +107,10 @@ def json_response(body: dict, status: int) -> Response:
     )
 
 
+def result_response(result: service.ScheduleResult) -> Response:
+    return Response(result.body, mimetype="application/json", status=result.status)
+
+
 @app.get("/health")
 @app.output(HealthSchema)
 @app.doc(summary="Check if the service is alive and reachable")
@@ -139,12 +120,7 @@ def health_check():
 
 
 def validation_error_response(error: Exception) -> Response:
-    if isinstance(error, KeyError):
-        detail = f"Missing field {error}"
-    else:
-        detail = str(error) or type(error).__name__
-    logging.error(f"Validation: {detail}")
-    return json_response({"message": "Validation error", "detail": detail}, 422)
+    return result_response(service.validation_error(error))
 
 
 @app.errorhandler(BadRequest)
@@ -183,42 +159,13 @@ def schedule(query_data, json_data):
 
     try:
         time_limit = time_limit_arg()
-        instance: Instance = Instance.from_dict(request.json)
-    except Exception as e:
+    except ValueError as e:
         return validation_error_response(e)
 
-    if ignored := unknown_fields(request.json):
-        logging.warning(f"Ignoring unknown fields: {', '.join(ignored)}")
-
-    try:
-        problem = instance.scheduling_problem()
-    except Exception as e:
-        # the fields are all there: a KeyError is an identifier that does not
-        # exist, not a missing field
-        if isinstance(e, KeyError):
-            e = ValueError(f"Unknown identifier {e}")
-        return validation_error_response(e)
-    logging.info(f"Time limit: {time_limit}")
-
-    try:
-        factory = NurseSchedulingFactory(problem)
-        model, nurse_view = factory.get_optimization_model()
-
-        if model.solve(solver="ortools", time_limit=time_limit):
-            logging.info(f"Solution penalty: {model.objective_value()}")
-            solution = Solution.from_nurse_view(nurse_view.value(), factory)
-        else:
-            logging.info("No solution has been found for the given problem")
-            return json_response(
-                {"message": "No solution has been found for the given problem"}, 400
-            )
-
-    except Exception as e:
-        logging.exception("Error while computing the schedule")
-        return json_response({"message": str(e)}, 500)
-
-    last_schedule_gantt_html.update(problem, solution)
-    return Response(solution.to_json(), mimetype="application/json", status=200)
+    result = service.schedule(request.json, time_limit)
+    if result.schedule is not None:
+        last_schedule_gantt_html.update(*result.schedule)
+    return result_response(result)
 
 
 @app.get("/last_schedule_gantt")
