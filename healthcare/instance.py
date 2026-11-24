@@ -154,8 +154,9 @@ class Cover:
 
     def validate(self):
         assert self.shift_id != "", "Shift ID must not be empty"
-        assert self.role_requirements is not None
-        assert len(self.role_requirements) > 0
+        assert self.role_requirements, (
+            "Cover role requirements must not be empty"
+        )
 
         for role_id, requirement in self.role_requirements.items():
             assert role_id != "", "Role ID must not be empty"
@@ -184,8 +185,7 @@ class BlockedWeekday:
             "Weekday must be between 0 and 6"
         )
 
-        assert self.shift_ids is not None
-        assert len(self.shift_ids) > 0, (
+        assert self.shift_ids, (
             "Blocked weekday must contain at least one shift ID"
         )
 
@@ -303,7 +303,9 @@ class Instance:
                 assert role_id in roles, (
                     f"Cover role '{role_id}' does not exist in staff roles"
                 )
-                assert requirement >= 0
+                assert requirement >= 0, (
+                    "Cover role requirements must be greater than or equal to 0"
+                )
 
         if any(
             cover.weight_for_under is not None
@@ -317,7 +319,9 @@ class Instance:
             )
 
         for blocked in self.blocked_weekdays:
-            assert 0 <= blocked.weekday <= 6
+            assert 0 <= blocked.weekday <= 6, (
+                "Blocked weekdays must be between 0 (Monday) and 6 (Sunday)"
+            )
 
             for shift_id in blocked.shift_ids:
                 assert shift_id in shifts, (
