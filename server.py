@@ -1,5 +1,7 @@
 import json
 import logging
+import signal
+import sys
 import threading
 from importlib.metadata import PackageNotFoundError, version
 
@@ -12,6 +14,7 @@ from marshmallow import EXCLUDE
 from marshmallow_dataclass import class_schema
 from werkzeug.exceptions import BadRequest
 
+import kafka_worker
 import service
 from healthcare import Instance, Solution
 from healthcare.visualize import visualize
@@ -58,6 +61,12 @@ class ScheduleQuerySchema(Schema):
 class HealthSchema(Schema):
     status = String(metadata={"example": "healthy"})
     version = String(metadata={"example": __version__})
+    kafka = String(
+        metadata={
+            "example": "running",
+            "description": "running or stopped, only if the Kafka consumer is enabled",
+        }
+    )
 
 
 ERROR_RESPONSES = {
@@ -98,6 +107,9 @@ def render_roster(problem, solution) -> str:
 
 last_schedule_gantt_html = LastScheduleGantt(render_roster)
 
+# thread of the Kafka consumer, if it has been started
+kafka_thread: threading.Thread | None = None
+
 
 def json_response(body: dict, status: int) -> Response:
     return Response(
@@ -113,10 +125,20 @@ def result_response(result: service.ScheduleResult) -> Response:
 
 @app.get("/health")
 @app.output(HealthSchema)
-@app.doc(summary="Check if the service is alive and reachable")
+@app.doc(
+    summary="Check if the service is alive and reachable",
+    responses={503: "The Kafka consumer has stopped"},
+)
 def health_check():
     logging.debug("Health check pinged.")
-    return json_response({"status": "healthy", "version": __version__}, 200)
+    body = {"status": "healthy", "version": __version__}
+    if kafka_thread is not None:
+        if kafka_thread.is_alive():
+            body["kafka"] = "running"
+        else:
+            body.update(status="unhealthy", kafka="stopped")
+            return json_response(body, 503)
+    return json_response(body, 200)
 
 
 def validation_error_response(error: Exception) -> Response:
@@ -172,7 +194,7 @@ def schedule(query_data, json_data):
 @app.doc(
     summary="Visualize the last computed schedule",
     description="HTML table of the shifts assigned to each nurse on each day "
-    "in the last schedule computed by /schedule.",
+    "in the last schedule computed by /schedule or for a Kafka request.",
     responses={
         200: {"description": "HTML visualization", "content": {"text/html": {}}},
         404: "No schedule has been computed yet",
@@ -193,11 +215,45 @@ def last_schedule_gantt():
     return Response(html, mimetype="text/html")
 
 
+def start_kafka_worker(config: kafka_worker.KafkaConfig) -> kafka_worker.KafkaWorker:
+    """Start the Kafka consumer in a thread: the schedules it computes are
+    shown by /last_schedule_gantt too."""
+    global kafka_thread
+    worker = kafka_worker.KafkaWorker(
+        config, on_schedule=last_schedule_gantt_html.update
+    )
+
+    def run():
+        try:
+            worker.run()
+        except Exception:
+            logging.exception("The Kafka consumer has stopped")
+
+    kafka_thread = threading.Thread(target=run, name="kafka-worker", daemon=True)
+    kafka_thread.start()
+    return worker
+
+
 def start():
+    """Start the server, and the Kafka consumer if KAFKA_BOOTSTRAP_SERVER is set.
+
+    Raise ValueError if the Kafka configuration is not valid."""
     logging.info("Starting...")
     from waitress import serve
 
-    serve(app, host="0.0.0.0", port=5000)
+    config = kafka_worker.KafkaConfig.from_env()
+    worker = start_kafka_worker(config) if config is not None else None
+
+    if threading.current_thread() is threading.main_thread():
+        # stop as on Ctrl+C, so that the Kafka consumer leaves its group
+        signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(0))
+    try:
+        serve(app, host="0.0.0.0", port=5000)
+    finally:
+        if worker is not None and kafka_thread is not None:
+            logging.info("Stopping the Kafka consumer...")
+            worker.stop()
+            kafka_thread.join(10)
 
 
 if __name__ == "__main__":
