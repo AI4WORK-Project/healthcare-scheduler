@@ -6,7 +6,7 @@ import time
 import uuid
 
 import pytest
-from confluent_kafka import Consumer, Producer
+from confluent_kafka import Consumer, KafkaError, KafkaException, Producer
 from testcontainers.community.kafka import KafkaContainer
 
 import kafka_worker
@@ -241,12 +241,17 @@ def test_server_kafka_worker(kafka_config: KafkaConfig, monkeypatch):
     config = KafkaConfig(**{**kafka_config.__dict__, "topic": topic})
     gantt = server.LastScheduleGantt(server.render_roster)
     monkeypatch.setattr(server, "last_schedule_gantt_html", gantt)
+    monkeypatch.setattr(server, "kafka_consumer", None)
     monkeypatch.setattr(server, "kafka_thread", None)
+    exits: list[int] = []
+    monkeypatch.setattr(server, "exit_process", exits.append)
     http = server.app.test_client()
 
     worker = server.start_kafka_worker(config)
     kafka_client = KafkaClient(config)
     try:
+        # "connecting" until the consumer has subscribed to the topic
+        assert server.kafka_consumer.connected.wait(30)
         response = http.get("/health")
         assert response.status_code == 200
         assert response.json["kafka"] == "running"
@@ -268,6 +273,124 @@ def test_server_kafka_worker(kafka_config: KafkaConfig, monkeypatch):
         "version": server.__version__,
         "kafka": "stopped",
     }
+    assert exits == []
+
+
+def test_processing_error(client: KafkaClient, monkeypatch):
+    # an unexpected error still gets a reply, as /schedule does
+    def fail(*args, **kwargs):
+        raise RuntimeError("solver failure")
+
+    monkeypatch.setattr(kafka_worker.service, "schedule", fail)
+    status, body = client.schedule(instance())
+    assert status == 500
+    assert body == {"message": "solver failure"}
+
+
+def unreachable_config(kafka_config: KafkaConfig) -> KafkaConfig:
+    return KafkaConfig(**{**kafka_config.__dict__, "bootstrap_server": "localhost:1"})
+
+
+def test_server_waits_for_broker(kafka_config: KafkaConfig, monkeypatch):
+    # the consumer keeps trying to reach the broker, and /health reports it
+    monkeypatch.setattr(kafka_worker, "RETRY_INTERVAL", 0.1)
+    monkeypatch.setattr(server, "kafka_consumer", None)
+    monkeypatch.setattr(server, "kafka_thread", None)
+    exits: list[int] = []
+    monkeypatch.setattr(server, "exit_process", exits.append)
+    http = server.app.test_client()
+
+    worker = server.start_kafka_worker(unreachable_config(kafka_config))
+    try:
+        time.sleep(1)
+        assert server.kafka_thread.is_alive()
+        response = http.get("/health")
+        assert response.status_code == 503
+        assert response.json["kafka"] == "connecting"
+    finally:
+        worker.stop()
+        server.kafka_thread.join(15)
+    assert not server.kafka_thread.is_alive()
+    assert exits == []
+
+
+def test_server_exits_when_consumer_fails(kafka_config: KafkaConfig, monkeypatch):
+    # a consumer that stops on its own makes the process exit, so that the
+    # container can be restarted
+    def run(self):
+        raise KafkaException(KafkaError(KafkaError._FATAL))
+
+    monkeypatch.setattr(kafka_worker.KafkaWorker, "run", run)
+    monkeypatch.setattr(server, "kafka_consumer", None)
+    monkeypatch.setattr(server, "kafka_thread", None)
+    exits: list[int] = []
+    monkeypatch.setattr(server, "exit_process", exits.append)
+
+    server.start_kafka_worker(kafka_config)
+    server.kafka_thread.join(10)
+    assert exits == [1]
+
+
+class FailingCommitConsumer:
+    def commit(self, **kwargs):
+        raise KafkaException(KafkaError(KafkaError.REBALANCE_IN_PROGRESS))
+
+
+def test_commit_error(kafka_config: KafkaConfig):
+    # a commit that fails, e.g. during a rebalance, does not stop the consumer
+    KafkaWorker(kafka_config)._commit(FailingCommitConsumer(), None)
+
+
+class FakeProducer:
+    """Reports the given delivery outcomes, one per message: None for a
+    delivered message, an error code for a failed one, and "pending" for a
+    message that is never delivered."""
+
+    def __init__(self, outcomes: list):
+        self.outcomes = outcomes
+        self.produced = 0
+        self.callbacks = []
+
+    def produce(self, topic, value, headers, on_delivery):
+        outcome = self.outcomes[self.produced]
+        self.produced += 1
+        if outcome != "pending":
+            error = None if outcome is None else KafkaError(outcome)
+            self.callbacks.append(lambda: on_delivery(error, None))
+
+    def flush(self, timeout):
+        while self.callbacks:
+            self.callbacks.pop(0)()
+        return 0
+
+
+def send_reply(worker: KafkaWorker, producer: FakeProducer) -> bool:
+    return worker._reply(
+        producer, REPLY_TOPIC, "id", kafka_worker.service.internal_error(Exception())
+    )
+
+
+def test_reply_temporary_error(kafka_config: KafkaConfig, monkeypatch):
+    # a reply that fails for a temporary error is sent again
+    monkeypatch.setattr(kafka_worker, "RETRY_INTERVAL", 0)
+    producer = FakeProducer([KafkaError._MSG_TIMED_OUT, KafkaError._TRANSPORT, None])
+    assert send_reply(KafkaWorker(kafka_config), producer)
+    assert producer.produced == 3
+
+
+def test_reply_permanent_error(kafka_config: KafkaConfig):
+    # a reply that cannot be delivered at all is given up
+    producer = FakeProducer([KafkaError.TOPIC_AUTHORIZATION_FAILED])
+    assert send_reply(KafkaWorker(kafka_config), producer)
+    assert producer.produced == 1
+
+
+def test_reply_not_sent_when_stopping(kafka_config: KafkaConfig):
+    # a reply not delivered when the worker stops is reported, so that its
+    # request is not committed
+    worker = KafkaWorker(kafka_config)
+    worker.stop()
+    assert not send_reply(worker, FakeProducer(["pending"]))
 
 
 def test_config_from_env(monkeypatch):

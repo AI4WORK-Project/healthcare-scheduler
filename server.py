@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import signal
 import sys
 import threading
@@ -64,7 +65,8 @@ class HealthSchema(Schema):
     kafka = String(
         metadata={
             "example": "running",
-            "description": "running or stopped, only if the Kafka consumer is enabled",
+            "description": "running, connecting or stopped, only if the Kafka consumer "
+            "is enabled",
         }
     )
 
@@ -107,8 +109,13 @@ def render_roster(problem, solution) -> str:
 
 last_schedule_gantt_html = LastScheduleGantt(render_roster)
 
-# thread of the Kafka consumer, if it has been started
+# Kafka consumer and its thread, if it has been started
+kafka_consumer: kafka_worker.KafkaWorker | None = None
 kafka_thread: threading.Thread | None = None
+
+# called with the exit code when the Kafka consumer stops on its own (replaced
+# in the tests)
+exit_process = os._exit
 
 
 def json_response(body: dict, status: int) -> Response:
@@ -127,17 +134,19 @@ def result_response(result: service.ScheduleResult) -> Response:
 @app.output(HealthSchema)
 @app.doc(
     summary="Check if the service is alive and reachable",
-    responses={503: "The Kafka consumer has stopped"},
+    responses={503: "The Kafka consumer is not connected to the broker or has stopped"},
 )
 def health_check():
     logging.debug("Health check pinged.")
     body = {"status": "healthy", "version": __version__}
     if kafka_thread is not None:
-        if kafka_thread.is_alive():
-            body["kafka"] = "running"
-        else:
+        if not kafka_thread.is_alive():
             body.update(status="unhealthy", kafka="stopped")
             return json_response(body, 503)
+        if kafka_consumer is None or not kafka_consumer.connected.is_set():
+            body.update(status="unhealthy", kafka="connecting")
+            return json_response(body, 503)
+        body["kafka"] = "running"
     return json_response(body, 200)
 
 
@@ -218,8 +227,11 @@ def last_schedule_gantt():
 
 def start_kafka_worker(config: kafka_worker.KafkaConfig) -> kafka_worker.KafkaWorker:
     """Start the Kafka consumer in a thread: the schedules it computes are
-    shown by /last_schedule_gantt too."""
-    global kafka_thread
+    shown by /last_schedule_gantt too.
+
+    If the consumer stops on its own, the process exits, so that the container
+    can be restarted: the Kafka requests would not be served otherwise."""
+    global kafka_consumer, kafka_thread
     worker = kafka_worker.KafkaWorker(
         config, on_schedule=last_schedule_gantt_html.update
     )
@@ -228,8 +240,12 @@ def start_kafka_worker(config: kafka_worker.KafkaConfig) -> kafka_worker.KafkaWo
         try:
             worker.run()
         except Exception:
-            logging.exception("The Kafka consumer has stopped")
+            logging.exception("The Kafka consumer has failed")
+        if not worker.stopping:
+            logging.critical("The Kafka consumer has stopped: exiting")
+            exit_process(1)
 
+    kafka_consumer = worker
     kafka_thread = threading.Thread(target=run, name="kafka-worker", daemon=True)
     kafka_thread.start()
     return worker

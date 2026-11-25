@@ -54,6 +54,10 @@ def json_body(body: dict) -> str:
     return json.dumps(body, separators=(",", ":"))
 
 
+def internal_error(error: Exception) -> ScheduleResult:
+    return ScheduleResult(500, json_body({"message": str(error)}))
+
+
 def validation_error(error: Exception) -> ScheduleResult:
     if isinstance(error, KeyError):
         detail = f"Missing field {error}"
@@ -99,6 +103,6 @@ def schedule(data: Any, time_limit: int | None) -> ScheduleResult:
 
     except Exception as e:
         logging.exception("Error while computing the schedule")
-        return ScheduleResult(500, json_body({"message": str(e)}))
+        return internal_error(e)
 
     return ScheduleResult(200, solution.to_json(), (problem, solution))

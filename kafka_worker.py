@@ -15,7 +15,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from confluent_kafka import Consumer, KafkaError, Message, Producer
+from confluent_kafka import Consumer, KafkaError, KafkaException, Message, Producer
 
 import service
 
@@ -34,6 +34,19 @@ MAX_TIME_LIMIT = 3600
 # messages are delivered again: it must cover the longest solve, which runs
 # between two polls
 MAX_POLL_INTERVAL_MS = (MAX_TIME_LIMIT + 300) * 1000
+# seconds between two attempts to reach the broker or to send a reply
+RETRY_INTERVAL = 5
+# a reply not delivered within this time is reported as failed, and sent again
+# if the error is temporary
+REPLY_TIMEOUT_MS = 30_000
+# delivery errors after which sending the reply again can succeed, besides the
+# ones that Kafka marks as retriable
+TEMPORARY_DELIVERY_ERRORS = {
+    KafkaError._MSG_TIMED_OUT,
+    KafkaError._TRANSPORT,
+    KafkaError._ALL_BROKERS_DOWN,
+    KafkaError._QUEUE_FULL,
+}
 
 
 def parse_time_limit(value: str, name: str) -> int:
@@ -124,6 +137,13 @@ class KafkaWorker:
         self.config = config
         self.on_schedule = on_schedule
         self._stopping = threading.Event()
+        # set while the consumer is subscribed to the topic
+        self.connected = threading.Event()
+
+    @property
+    def stopping(self) -> bool:
+        """Whether stop() has been called."""
+        return self._stopping.is_set()
 
     def stop(self):
         """Ask the worker to stop: it closes the consumer after the request in
@@ -134,7 +154,8 @@ class KafkaWorker:
         """Consume the requests until stop() is called.
 
         The consumer is used and closed only by the thread running this method,
-        since it is not safe to close it while another thread polls it."""
+        since it is not safe to close it while another thread polls it.
+        Raise KafkaException if the Kafka client has a fatal error."""
         logger.info(f"Kafka bootstrap server: {self.config.bootstrap_server}")
         consumer = Consumer(
             {
@@ -148,22 +169,45 @@ class KafkaWorker:
                 "max.poll.interval.ms": MAX_POLL_INTERVAL_MS,
             }
         )
-        producer = Producer({**self.config.client_config(), "acks": "all"})
+        producer = Producer(
+            {
+                **self.config.client_config(),
+                "acks": "all",
+                "message.timeout.ms": REPLY_TIMEOUT_MS,
+            }
+        )
         try:
-            # asking for the metadata of the topic creates it, if the broker
-            # allows it
-            topic = self.config.topic
-            metadata = consumer.list_topics(topic, timeout=10)
-            found = metadata.topics is not None and topic in metadata.topics
-            logger.info(f"Topic {topic} {'found' if found else 'not found'}")
-
-            logger.info(f"Subscribing to topic {topic}")
-            consumer.subscribe([topic])
-            self._consume(consumer, producer)
+            if self._wait_for_broker(consumer):
+                logger.info(f"Subscribing to topic {self.config.topic}")
+                consumer.subscribe([self.config.topic])
+                self.connected.set()
+                self._consume(consumer, producer)
         finally:
+            self.connected.clear()
             logger.info("Closing the Kafka consumer")
             consumer.close()
             producer.flush(5)
+
+    def _wait_for_broker(self, consumer: Consumer) -> bool:
+        """Wait until the broker answers, which may take a while if it starts
+        together with the scheduler. Return False if stop() is called first.
+
+        Asking for the metadata of the topic creates it, if the broker allows
+        it."""
+        topic = self.config.topic
+        while not self._stopping.is_set():
+            try:
+                metadata = consumer.list_topics(topic, timeout=10)
+            except KafkaException as e:
+                logger.error(
+                    f"Cannot reach the Kafka broker, retrying in {RETRY_INTERVAL} s: {e}"
+                )
+                self._stopping.wait(RETRY_INTERVAL)
+                continue
+            found = metadata.topics is not None and topic in metadata.topics
+            logger.info(f"Topic {topic} {'found' if found else 'not found'}")
+            return True
+        return False
 
     def _consume(self, consumer: Consumer, producer: Producer):
         waiting = True
@@ -177,6 +221,8 @@ class KafkaWorker:
 
             error = msg.error()
             if error is not None:
+                if error.fatal():
+                    raise KafkaException(error)
                 if error.code() in (
                     KafkaError.UNKNOWN_TOPIC_OR_PART,
                     KafkaError._UNKNOWN_TOPIC,
@@ -187,14 +233,25 @@ class KafkaWorker:
                     logger.error(f"Failed to poll topic {self.config.topic}: {error}")
                 continue
 
-            try:
-                self._handle(msg, producer)
-            except Exception:
-                logger.exception("Failed to handle a request")
-            consumer.commit(message=msg, asynchronous=False)
+            if not self._handle(msg, producer):
+                # stopped before the reply has been sent: the request is not
+                # committed, so it is processed again after a restart
+                break
+            self._commit(consumer, msg)
             waiting = True
 
-    def _handle(self, msg: Message, producer: Producer):
+    def _commit(self, consumer: Consumer, msg: Message):
+        try:
+            consumer.commit(message=msg, asynchronous=False)
+        except KafkaException as e:
+            # e.g. during a rebalance: the request may then be processed again
+            # by the consumer that gets its partition
+            logger.warning(f"Failed to commit a request: {e}")
+
+    def _handle(self, msg: Message, producer: Producer) -> bool:
+        """Process a request and send its reply.
+
+        Return False if stop() is called before the reply has been sent."""
         headers = message_headers(msg)
         correlation_id = headers.get(HEADER_CORRELATION_ID)
         reply_topic = headers.get(HEADER_REPLY_TOPIC)
@@ -203,14 +260,20 @@ class KafkaWorker:
                 f"Ignoring a request without the {HEADER_CORRELATION_ID} or "
                 f"{HEADER_REPLY_TOPIC} header"
             )
-            return
+            return True
 
         logger.info(f"Received request {correlation_id}")
-        result = self._schedule(msg.value(), headers)
-        self._reply(producer, reply_topic, correlation_id, result)
+        try:
+            result = self._schedule(msg.value(), headers)
+        except Exception as e:
+            logger.exception(f"Failed to process request {correlation_id}")
+            result = service.internal_error(e)
+        if not self._reply(producer, reply_topic, correlation_id, result):
+            return False
 
         if result.schedule is not None and self.on_schedule:
             self.on_schedule(*result.schedule)
+        return True
 
     def _schedule(
         self, value: bytes | None, headers: dict[str, str]
@@ -237,24 +300,53 @@ class KafkaWorker:
         reply_topic: str,
         correlation_id: str,
         result: service.ScheduleResult,
-    ):
-        def on_delivery(error, msg):
-            if error:
-                logger.error(f"Failed to send the reply to {correlation_id}: {error}")
-            else:
+    ) -> bool:
+        """Send the reply to a request, again as long as the error is temporary.
+
+        Return False if stop() is called before the reply has been delivered.
+        A reply that cannot be delivered at all, e.g. because the reply topic is
+        not valid, is given up."""
+        while True:
+            outcome: list[KafkaError | None] = []
+            try:
+                producer.produce(
+                    reply_topic,
+                    result.body,
+                    headers=[
+                        (HEADER_CORRELATION_ID, correlation_id.encode("utf-8")),
+                        (HEADER_STATUS, str(result.status).encode("utf-8")),
+                    ],
+                    on_delivery=lambda error, _msg: outcome.append(error),
+                )
+            except BufferError:
+                outcome.append(KafkaError(KafkaError._QUEUE_FULL))
+            except KafkaException as e:
+                outcome.append(e.args[0])
+            # the outcome of the delivery comes within REPLY_TIMEOUT_MS
+            while not outcome and not self._stopping.is_set():
+                producer.flush(1.0)
+            if not outcome:
+                # stopping: a last chance to deliver the reply
+                producer.flush(5)
+                if not outcome:
+                    logger.error(f"The reply to {correlation_id} has not been sent")
+                    return False
+
+            error = outcome[0]
+            if error is None:
                 logger.info(
                     f"Sent the reply to {correlation_id} with status {result.status} "
-                    f"to topic {msg.topic()}"
+                    f"to topic {reply_topic}"
                 )
-
-        producer.produce(
-            reply_topic,
-            result.body,
-            headers=[
-                (HEADER_CORRELATION_ID, correlation_id.encode("utf-8")),
-                (HEADER_STATUS, str(result.status).encode("utf-8")),
-            ],
-            on_delivery=on_delivery,
-        )
-        if producer.flush(10) > 0:
-            logger.error(f"The reply to {correlation_id} has not been sent in time")
+                return True
+            if not error.retriable() and error.code() not in TEMPORARY_DELIVERY_ERRORS:
+                logger.error(
+                    f"Cannot send the reply to {correlation_id}, giving up: {error}"
+                )
+                return True
+            logger.error(
+                f"Failed to send the reply to {correlation_id}, retrying in "
+                f"{RETRY_INTERVAL} s: {error}"
+            )
+            if self._stopping.wait(RETRY_INTERVAL):
+                return False
