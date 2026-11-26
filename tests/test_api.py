@@ -80,10 +80,15 @@ def test_malformed_json():
 
 @pytest.mark.parametrize(
     "data, content_type",
-    [(None, None), ("{}", "text/plain"), ("{}", "application/x-www-form-urlencoded")],
+    [
+        (None, None),
+        ("{}", "text/plain"),
+        ("{}", "application/x-www-form-urlencoded"),
+        ("", "application/json"),
+    ],
 )
 def test_body_not_json(data, content_type):
-    # e.g. curl -d, which does not send the JSON Content-Type
+    # e.g. curl -d, which does not send the JSON Content-Type, or an empty body
     headers = {"Content-Type": content_type} if content_type else {}
     response = requests.post(URL, data=data, headers=headers)
     assert response.status_code == 422

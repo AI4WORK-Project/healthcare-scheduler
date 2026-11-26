@@ -191,7 +191,7 @@ def schedule(query_data, json_data):
     try:
         time_limit = time_limit_arg()
         data = request.json
-    except (ValueError, UnsupportedMediaType) as e:
+    except (ValueError, BadRequest, UnsupportedMediaType) as e:
         return validation_error_response(e)
 
     result = service.schedule(data, time_limit)
