@@ -191,8 +191,12 @@ def schedule(query_data, json_data):
     try:
         time_limit = time_limit_arg()
         data = request.json
-    except (ValueError, BadRequest, UnsupportedMediaType) as e:
+    except (ValueError, UnsupportedMediaType) as e:
         return validation_error_response(e)
+    except BadRequest:
+        # the request parser decodes the body before, and leaves out only an
+        # empty one: report it as invalid input, as documented
+        return validation_error_response(ValueError("Invalid JSON: empty body"))
 
     result = service.schedule(data, time_limit)
     if result.schedule is not None:

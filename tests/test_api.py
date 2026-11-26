@@ -69,9 +69,10 @@ def test_invalid_instance():
     assert len(response.json()["detail"]) > 0
 
 
-def test_malformed_json():
+@pytest.mark.parametrize("data", ['{"horizon": 7,', "", " "])
+def test_malformed_json(data):
     response = requests.post(
-        URL, data='{"horizon": 7,', headers={"Content-Type": "application/json"}
+        URL, data=data, headers={"Content-Type": "application/json"}
     )
     assert response.status_code == 422
     assert response.json()["message"] == "Validation error"
@@ -80,15 +81,10 @@ def test_malformed_json():
 
 @pytest.mark.parametrize(
     "data, content_type",
-    [
-        (None, None),
-        ("{}", "text/plain"),
-        ("{}", "application/x-www-form-urlencoded"),
-        ("", "application/json"),
-    ],
+    [(None, None), ("{}", "text/plain"), ("{}", "application/x-www-form-urlencoded")],
 )
 def test_body_not_json(data, content_type):
-    # e.g. curl -d, which does not send the JSON Content-Type, or an empty body
+    # e.g. curl -d, which does not send the JSON Content-Type
     headers = {"Content-Type": content_type} if content_type else {}
     response = requests.post(URL, data=data, headers=headers)
     assert response.status_code == 422
