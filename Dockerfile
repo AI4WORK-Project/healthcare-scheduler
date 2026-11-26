@@ -15,7 +15,7 @@ RUN pip install /app/
 COPY LICENSE NOTICE /app/
 COPY healthcare/ /app/healthcare/
 RUN pip install --no-deps /app/
-COPY server.py /app/
+COPY server.py service.py kafka_worker.py /app/
 
 # Expose the port of the server
 EXPOSE 5000
@@ -24,5 +24,5 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/health', timeout=4)"
 
-# Run the server
+# Run the server, with the Kafka consumer if KAFKA_BOOTSTRAP_SERVER is set
 CMD ["python", "server.py"]

@@ -11,6 +11,7 @@ import pytest
 import requests
 
 import server
+import service
 
 
 URL = "http://0.0.0.0:5000/schedule"
@@ -77,6 +78,18 @@ def test_malformed_json():
     assert response.json()["detail"].startswith("Invalid JSON")
 
 
+@pytest.mark.parametrize(
+    "data, content_type",
+    [(None, None), ("{}", "text/plain"), ("{}", "application/x-www-form-urlencoded")],
+)
+def test_body_not_json(data, content_type):
+    # e.g. curl -d, which does not send the JSON Content-Type
+    headers = {"Content-Type": content_type} if content_type else {}
+    response = requests.post(URL, data=data, headers=headers)
+    assert response.status_code == 422
+    assert response.json()["message"] == "Validation error"
+
+
 @pytest.mark.parametrize("time_limit", ["60s", "10.5", "0", "-3"])
 def test_invalid_time_limit(time_limit: str):
     instance = load_instance_json("instance0.json")
@@ -131,12 +144,12 @@ def test_unknown_identifier(monkeypatch):
 
 def test_unknown_fields():
     instance = load_instance_json("instance0.json")
-    assert server.unknown_fields(instance) == []
+    assert service.unknown_fields(instance) == []
 
     instance["blocked_weekday"] = []
     instance["staff"][1]["max_shift"] = []
     instance["cover"][0]["role_requirements"]["nurse"] = 1
-    assert server.unknown_fields(instance) == ["blocked_weekday", "staff.1.max_shift"]
+    assert service.unknown_fields(instance) == ["blocked_weekday", "staff.1.max_shift"]
 
 
 def test_instance_not_solvable():

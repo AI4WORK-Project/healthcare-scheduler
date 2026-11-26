@@ -1,18 +1,23 @@
 import json
 import logging
+import os
+import signal
+import sys
 import threading
 from importlib.metadata import PackageNotFoundError, version
 
 from apiflask import APIFlask, HTTPError, Schema
 from apiflask.fields import Integer, String
 from apiflask.validators import Range
-from marshmallow import EXCLUDE, RAISE
-from flask import request, Response
+from flask import Response, request
 from flask_cors import CORS
+from marshmallow import EXCLUDE
 from marshmallow_dataclass import class_schema
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, UnsupportedMediaType
 
-from healthcare import Instance, Solution, NurseSchedulingFactory
+import kafka_worker
+import service
+from healthcare import Instance, Solution
 from healthcare.visualize import visualize
 
 logging.basicConfig(level=logging.INFO)
@@ -43,30 +48,6 @@ InstanceSchema = class_schema(Instance, base_schema=DocSchema)
 SolutionSchema = class_schema(Solution, base_schema=DocSchema)
 
 
-class UnknownFieldsSchema(Schema):
-    """Base of the schema used only to find the unknown fields of a request."""
-
-    class Meta:
-        unknown = RAISE
-
-
-InstanceUnknownFieldsSchema = class_schema(Instance, base_schema=UnknownFieldsSchema)
-
-
-def unknown_fields(data) -> list[str]:
-    """Return the paths of the fields of the request that are not part of an
-    instance, such as staff.0.blocked_weekday: they are ignored."""
-
-    def paths(errors: dict, prefix: str):
-        for key, value in errors.items():
-            if value == ["Unknown field."]:
-                yield f"{prefix}{key}"
-            elif isinstance(value, dict):
-                yield from paths(value, f"{prefix}{key}.")
-
-    return sorted(paths(InstanceUnknownFieldsSchema().validate(data), ""))
-
-
 class ScheduleQuerySchema(Schema):
     time_limit = Integer(
         required=False,
@@ -81,6 +62,13 @@ class ScheduleQuerySchema(Schema):
 class HealthSchema(Schema):
     status = String(metadata={"example": "healthy"})
     version = String(metadata={"example": __version__})
+    kafka = String(
+        metadata={
+            "example": "running",
+            "description": "running, connecting or stopped, only if the Kafka consumer "
+            "is enabled",
+        }
+    )
 
 
 ERROR_RESPONSES = {
@@ -121,6 +109,14 @@ def render_roster(problem, solution) -> str:
 
 last_schedule_gantt_html = LastScheduleGantt(render_roster)
 
+# Kafka consumer and its thread, if it has been started
+kafka_consumer: kafka_worker.KafkaWorker | None = None
+kafka_thread: threading.Thread | None = None
+
+# called with the exit code when the Kafka consumer stops on its own (replaced
+# in the tests)
+exit_process = os._exit
+
 
 def json_response(body: dict, status: int) -> Response:
     return Response(
@@ -130,21 +126,32 @@ def json_response(body: dict, status: int) -> Response:
     )
 
 
+def result_response(result: service.ScheduleResult) -> Response:
+    return Response(result.body, mimetype="application/json", status=result.status)
+
+
 @app.get("/health")
 @app.output(HealthSchema)
-@app.doc(summary="Check if the service is alive and reachable")
+@app.doc(
+    summary="Check if the service is alive and reachable",
+    responses={503: "The Kafka consumer is not connected to the broker or has stopped"},
+)
 def health_check():
     logging.debug("Health check pinged.")
-    return json_response({"status": "healthy", "version": __version__}, 200)
+    body = {"status": "healthy", "version": __version__}
+    if kafka_thread is not None:
+        if not kafka_thread.is_alive():
+            body.update(status="unhealthy", kafka="stopped")
+            return json_response(body, 503)
+        if kafka_consumer is None or not kafka_consumer.connected.is_set():
+            body.update(status="unhealthy", kafka="connecting")
+            return json_response(body, 503)
+        body["kafka"] = "running"
+    return json_response(body, 200)
 
 
 def validation_error_response(error: Exception) -> Response:
-    if isinstance(error, KeyError):
-        detail = f"Missing field {error}"
-    else:
-        detail = str(error) or type(error).__name__
-    logging.error(f"Validation: {detail}")
-    return json_response({"message": "Validation error", "detail": detail}, 422)
+    return result_response(service.validation_error(error))
 
 
 @app.errorhandler(BadRequest)
@@ -183,49 +190,21 @@ def schedule(query_data, json_data):
 
     try:
         time_limit = time_limit_arg()
-        instance: Instance = Instance.from_dict(request.json)
-    except Exception as e:
+        data = request.json
+    except (ValueError, UnsupportedMediaType) as e:
         return validation_error_response(e)
 
-    if ignored := unknown_fields(request.json):
-        logging.warning(f"Ignoring unknown fields: {', '.join(ignored)}")
-
-    try:
-        problem = instance.scheduling_problem()
-    except Exception as e:
-        # the fields are all there: a KeyError is an identifier that does not
-        # exist, not a missing field
-        if isinstance(e, KeyError):
-            e = ValueError(f"Unknown identifier {e}")
-        return validation_error_response(e)
-    logging.info(f"Time limit: {time_limit}")
-
-    try:
-        factory = NurseSchedulingFactory(problem)
-        model, nurse_view = factory.get_optimization_model()
-
-        if model.solve(solver="ortools", time_limit=time_limit):
-            logging.info(f"Solution penalty: {model.objective_value()}")
-            solution = Solution.from_nurse_view(nurse_view.value(), factory)
-        else:
-            logging.info("No solution has been found for the given problem")
-            return json_response(
-                {"message": "No solution has been found for the given problem"}, 400
-            )
-
-    except Exception as e:
-        logging.exception("Error while computing the schedule")
-        return json_response({"message": str(e)}, 500)
-
-    last_schedule_gantt_html.update(problem, solution)
-    return Response(solution.to_json(), mimetype="application/json", status=200)
+    result = service.schedule(data, time_limit)
+    if result.schedule is not None:
+        last_schedule_gantt_html.update(*result.schedule)
+    return result_response(result)
 
 
 @app.get("/last_schedule_gantt")
 @app.doc(
     summary="Visualize the last computed schedule",
     description="HTML table of the shifts assigned to each nurse on each day "
-    "in the last schedule computed by /schedule.",
+    "in the last schedule computed by /schedule or for a Kafka request.",
     responses={
         200: {"description": "HTML visualization", "content": {"text/html": {}}},
         404: "No schedule has been computed yet",
@@ -246,11 +225,52 @@ def last_schedule_gantt():
     return Response(html, mimetype="text/html")
 
 
+def start_kafka_worker(config: kafka_worker.KafkaConfig) -> kafka_worker.KafkaWorker:
+    """Start the Kafka consumer in a thread: the schedules it computes are
+    shown by /last_schedule_gantt too.
+
+    If the consumer stops on its own, the process exits, so that the container
+    can be restarted: the Kafka requests would not be served otherwise."""
+    global kafka_consumer, kafka_thread
+    worker = kafka_worker.KafkaWorker(
+        config, on_schedule=last_schedule_gantt_html.update
+    )
+
+    def run():
+        try:
+            worker.run()
+        except Exception:
+            logging.exception("The Kafka consumer has failed")
+        if not worker.stopping:
+            logging.critical("The Kafka consumer has stopped: exiting")
+            exit_process(1)
+
+    kafka_consumer = worker
+    kafka_thread = threading.Thread(target=run, name="kafka-worker", daemon=True)
+    kafka_thread.start()
+    return worker
+
+
 def start():
+    """Start the server, and the Kafka consumer if KAFKA_BOOTSTRAP_SERVER is set.
+
+    Raise ValueError if the Kafka configuration is not valid."""
     logging.info("Starting...")
     from waitress import serve
 
-    serve(app, host="0.0.0.0", port=5000)
+    config = kafka_worker.KafkaConfig.from_env()
+    worker = start_kafka_worker(config) if config is not None else None
+
+    if threading.current_thread() is threading.main_thread():
+        # stop as on Ctrl+C, so that the Kafka consumer leaves its group
+        signal.signal(signal.SIGTERM, lambda signum, frame: sys.exit(0))
+    try:
+        serve(app, host="0.0.0.0", port=5000)
+    finally:
+        if worker is not None and kafka_thread is not None:
+            logging.info("Stopping the Kafka consumer...")
+            worker.stop()
+            kafka_thread.join(10)
 
 
 if __name__ == "__main__":
