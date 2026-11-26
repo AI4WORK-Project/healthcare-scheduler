@@ -17,6 +17,7 @@ import service
 URL = "http://0.0.0.0:5000/schedule"
 HEALTH_URL = "http://0.0.0.0:5000/health"
 GANTT_URL = "http://0.0.0.0:5000/last_schedule_gantt"
+OPENAPI_URL = "http://0.0.0.0:5000/openapi.json"
 INSTANCES_PATH = os.path.join(pathlib.Path(__file__).parent.resolve(), "instances")
 
 logger = logging.getLogger("test_api")
@@ -69,9 +70,10 @@ def test_invalid_instance():
     assert len(response.json()["detail"]) > 0
 
 
-def test_malformed_json():
+@pytest.mark.parametrize("data", ['{"horizon": 7,', "", " "])
+def test_malformed_json(data):
     response = requests.post(
-        URL, data='{"horizon": 7,', headers={"Content-Type": "application/json"}
+        URL, data=data, headers={"Content-Type": "application/json"}
     )
     assert response.status_code == 422
     assert response.json()["message"] == "Validation error"
@@ -80,15 +82,10 @@ def test_malformed_json():
 
 @pytest.mark.parametrize(
     "data, content_type",
-    [
-        (None, None),
-        ("{}", "text/plain"),
-        ("{}", "application/x-www-form-urlencoded"),
-        ("", "application/json"),
-    ],
+    [(None, None), ("{}", "text/plain"), ("{}", "application/x-www-form-urlencoded")],
 )
 def test_body_not_json(data, content_type):
-    # e.g. curl -d, which does not send the JSON Content-Type, or an empty body
+    # e.g. curl -d, which does not send the JSON Content-Type
     headers = {"Content-Type": content_type} if content_type else {}
     response = requests.post(URL, data=data, headers=headers)
     assert response.status_code == 422
@@ -139,7 +136,7 @@ def test_unknown_identifier(monkeypatch):
     def scheduling_problem(self):
         raise KeyError("night")
 
-    monkeypatch.setattr(server.Instance, "scheduling_problem", scheduling_problem)
+    monkeypatch.setattr(service.Instance, "scheduling_problem", scheduling_problem)
     response = server.app.test_client().post(
         "/schedule", json=load_instance_json("instance0.json")
     )
@@ -154,7 +151,22 @@ def test_unknown_fields():
     instance["blocked_weekday"] = []
     instance["staff"][1]["max_shift"] = []
     instance["cover"][0]["role_requirements"]["nurse"] = 1
-    assert service.unknown_fields(instance) == ["blocked_weekday", "staff.1.max_shift"]
+    instance["shift_on_requests"][0]["wieght"] = 1
+    instance["shift_off_requests"][0]["wieght"] = 1
+    assert service.unknown_fields(instance) == [
+        "blocked_weekday",
+        "shift_off_requests.0.wieght",
+        "shift_on_requests.0.wieght",
+        "staff.1.max_shift",
+    ]
+
+
+def test_openapi_ignores_unknown_fields():
+    # each dataclass has a single schema, which does not reject unknown fields
+    schemas = requests.get(OPENAPI_URL).json()["components"]["schemas"]
+    assert "ShiftRequest1" not in schemas
+    for name in ("Instance", "ShiftRequest", "Staff", "Cover"):
+        assert "additionalProperties" not in schemas[name]
 
 
 def test_instance_not_solvable():

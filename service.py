@@ -7,7 +7,8 @@ from dataclasses import dataclass
 from typing import Any
 
 from apiflask import Schema
-from marshmallow import RAISE
+from marshmallow import EXCLUDE, RAISE
+from marshmallow.fields import Nested
 from marshmallow_dataclass import class_schema
 
 from healthcare import Instance, NurseSchedulingFactory, Solution
@@ -15,14 +16,31 @@ from healthcare import Instance, NurseSchedulingFactory, Solution
 NO_SOLUTION_MESSAGE = "No solution has been found for the given problem"
 
 
-class UnknownFieldsSchema(Schema):
-    """Base of the schema used only to find the unknown fields of a request."""
+class DataclassSchema(Schema):
+    """Base of the schemas of the dataclasses, which document the API and find
+    the unknown fields of a request: the input is parsed and validated by the
+    dataclasses, so unknown fields are ignored.
+
+    All the schemas of the dataclasses must derive from this base:
+    marshmallow_dataclass refers to a dataclass nested twice in the same class,
+    as ShiftRequest in Instance, by its name, and marshmallow resolves the name
+    to the first schema created with it, whatever its base."""
 
     class Meta:
-        unknown = RAISE
+        unknown = EXCLUDE
 
 
-InstanceUnknownFieldsSchema = class_schema(Instance, base_schema=UnknownFieldsSchema)
+InstanceSchema = class_schema(Instance, base_schema=DataclassSchema)
+
+
+def reject_unknown(schema: Schema) -> Schema:
+    """Make the schema and its nested schemas reject the unknown fields."""
+    schema.unknown = RAISE
+    for field in schema.fields.values():
+        for nested in (field, getattr(field, "inner", None)):
+            if isinstance(nested, Nested):
+                reject_unknown(nested.schema)
+    return schema
 
 
 def unknown_fields(data) -> list[str]:
@@ -36,7 +54,7 @@ def unknown_fields(data) -> list[str]:
             elif isinstance(value, dict):
                 yield from paths(value, f"{prefix}{key}.")
 
-    return sorted(paths(InstanceUnknownFieldsSchema().validate(data), ""))
+    return sorted(paths(reject_unknown(InstanceSchema()).validate(data), ""))
 
 
 @dataclass
